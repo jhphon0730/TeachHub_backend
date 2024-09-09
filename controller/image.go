@@ -1,30 +1,37 @@
 package controller
 
 import (
-	"log"
 	"net/http"
-	"os"
-	"io"
 	"image_storage_server/json"
+	"image_storage_server/service"
 )
 
 // struct & interface
-type ImageController struct{}
+type ImageController struct{
+	imageService service.ImageServiceInterface
+}
 
 type ImageControllerInterface interface {
 	ReadImage(w http.ResponseWriter, r *http.Request)
 	SaveImage(w http.ResponseWriter, r *http.Request)
 }
 
-// 이렇게 생성한 함수는 interface를 구현하게 된다.
-// 이렇게 하면 다른 struct에서도 이 interface를 구현하게 되면
-// 이 함수를 사용할 수 있게 된다.
 func NewImageController() ImageControllerInterface {
-	return &ImageController{}
+	imageService := service.NewImageService()
+
+	return &ImageController{
+		imageService: imageService,
+	}
 }
 
 func (ic *ImageController) ReadImage(w http.ResponseWriter, r *http.Request) {
-	http.ServeFile(w, r, r.URL.Path[1:])
+	image_name := r.URL.Path[1:]
+	if len(image_name) == 0 {
+		http.Error(w, "No image name", http.StatusBadRequest)
+		return
+	}
+
+	http.ServeFile(w, r, image_name)
 }
 
 func (ic *ImageController) SaveImage(w http.ResponseWriter, r *http.Request) {
@@ -43,31 +50,13 @@ func (ic *ImageController) SaveImage(w http.ResponseWriter, r *http.Request) {
 	}
 	defer file.Close()
 
-	// Check the File is Already Exists
-	//	if the file is already exists, return file path 
-	if _, err := os.Stat(handler.Filename); err == nil {
-		log.Println("File is already exists")
-		json.ResponseJSON(w, http.StatusOK, map[string]interface{}{
-			"url": "http://localhost:8080/images/" + handler.Filename,
-		})
-		return
-	}
-
-	// Create a new file in the server
-	dst, err := os.Create(handler.Filename)
+	// service here
+	result, err := ic.imageService.SaveImage(handler.Filename, file)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-	defer dst.Close()
 
-	// Copy the file to the server
-	if _, err := io.Copy(dst, file); err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
-
-	json.ResponseJSON(w, http.StatusOK, map[string]interface{}{
-		"url": "http://localhost:8080/images/" + handler.Filename,
-	})
+	json.ResponseJSON(w, http.StatusOK, result)
+	return
 }
