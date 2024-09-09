@@ -5,8 +5,7 @@ import (
 	"net/http"
 	"os"
 	"io"
-	// "fmt"
-	"encoding/json"
+	"image_storage_server/json"
 )
 
 const (
@@ -21,13 +20,6 @@ func CORS(next http.Handler) http.Handler {
 		// Continue to the next handler
 		next.ServeHTTP(w, r)
 	})
-}
-
-func ResponseJSON(w http.ResponseWriter, code int, data map[string]interface{}) {
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(code)
-
-	json.NewEncoder(w).Encode(data)
 }
 
 func SaveImage(w http.ResponseWriter, r *http.Request) {
@@ -50,7 +42,7 @@ func SaveImage(w http.ResponseWriter, r *http.Request) {
 	//	if the file is already exists, return file path 
 	if _, err := os.Stat(handler.Filename); err == nil {
 		log.Println("File is already exists")
-		ResponseJSON(w, http.StatusOK, map[string]interface{}{
+		json.ResponseJSON(w, http.StatusOK, map[string]interface{}{
 			"url": "http://localhost:8080/images/" + handler.Filename,
 		})
 		return
@@ -70,7 +62,7 @@ func SaveImage(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	ResponseJSON(w, http.StatusOK, map[string]interface{}{
+	json.ResponseJSON(w, http.StatusOK, map[string]interface{}{
 		"url": "http://localhost:8080/images/" + handler.Filename,
 	})
 }
