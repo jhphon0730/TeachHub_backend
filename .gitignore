@@ -1,0 +1,14 @@
+// Images 
+images/*.png
+images/*.jpg
+images/*.jpeg
+images/*.gif
+images/*.svg
+images/*.webp
+images/*.ico
+images/*.bmp
+images/*.tiff
+images/*.tif
+images/*.psd
+images/*.ai
+images/*.eps
