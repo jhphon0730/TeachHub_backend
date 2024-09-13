@@ -4,29 +4,32 @@ import (
 	"log"
 	"os"
 	"net/http"
+	"embed"
 
 	"image_storage_server/middleware"
 	"image_storage_server/controller"
 )
 
 var (
-	ImageController = controller.NewImageController()
+	ImageController controller.ImageControllerInterface
 )
 
 type Router struct {
 	router *http.ServeMux
 }
 
-func NewRouter() *Router {
+func NewRouter(imagesEmbed embed.FS) *Router {
 	router := http.NewServeMux()
 	Router := &Router{router}
+
+	// Create Controller
+	ImageController = controller.NewImageController(imagesEmbed)
 
 	return Router
 } 
 
 func (r *Router) Runserver(PORT string) {
-	r.HandleFunc("/upload", ImageController.SaveImage)
-	r.HandleFunc("/", ImageController.ReadImage)
+	r.newImageHandler()
 
 	server := &http.Server{
 		Addr:    PORT,
@@ -41,6 +44,13 @@ func (r *Router) Runserver(PORT string) {
 	}
 
 	http.ListenAndServe(PORT, r.router)
+}
+
+func (r *Router) newImageHandler() {
+	r.HandleFunc("/upload", ImageController.SaveImage)
+	// get query string 
+		// ex) http://localhost:8080/read?imageName=sample.jpg
+	r.HandleFunc("/read", ImageController.ReadImage)
 }
 
 func (r *Router) HandleFunc(pattern string, handler func(http.ResponseWriter, *http.Request)) {
