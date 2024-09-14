@@ -11,3 +11,7 @@ func ResponseJSON(w http.ResponseWriter, code int, data map[string]interface{}) 
 
 	json.NewEncoder(w).Encode(data)
 }
+
+func ResponseError(w http.ResponseWriter, code int, message string) {
+	ResponseJSON(w, code, map[string]interface{}{"error": message})
+}

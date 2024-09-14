@@ -19,9 +19,8 @@ type Router struct {
 }
 
 func NewRouter(imagesEmbed embed.FS) *Router {
-	router := http.NewServeMux()
+	router := http.NewServeMux() 
 	Router := &Router{router}
-
 	// Create Controller
 	ImageController = controller.NewImageController(imagesEmbed)
 
@@ -29,14 +28,20 @@ func NewRouter(imagesEmbed embed.FS) *Router {
 } 
 
 func (r *Router) Runserver(PORT string) {
+	// Create Handlers
 	r.newImageHandler()
+
+	// Create Middleware 
+	middlewareStack := middleware.CreateMiddlewareStack(
+		middleware.CORS,
+		middleware.Logger,
+	)
+
 
 	server := &http.Server{
 		Addr:    PORT,
-		Handler: middleware.CORS(r.router),
+		Handler: middlewareStack(r.router),
 	}
-	// 이후에 CORS와 같은 미들웨어를 2개 이상 사용할 때는 순서에 주의해야 함
-	// CORS(router) -> Logger(CORS(router)) 이런식으로 사용해야 함
 
 	log.Println("Server is running on port", PORT)
 	if err := server.ListenAndServe(); err != nil {
@@ -47,10 +52,10 @@ func (r *Router) Runserver(PORT string) {
 }
 
 func (r *Router) newImageHandler() {
-	r.HandleFunc("/upload", ImageController.SaveImage)
+	r.HandleFunc("POST /upload", ImageController.SaveImage)
 	// get query string 
 		// ex) http://localhost:8080/read?imageName=sample.jpg
-	r.HandleFunc("/read", ImageController.ReadImage)
+	r.HandleFunc("GET /read", ImageController.ReadImage)
 }
 
 func (r *Router) HandleFunc(pattern string, handler func(http.ResponseWriter, *http.Request)) {
