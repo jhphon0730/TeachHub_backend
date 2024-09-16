@@ -1,4 +1,7 @@
-// Images 
+# ENV ? 
+NOT YET 
+
+# Images 
 images/*.png
 images/*.jpg
 images/*.jpeg
@@ -12,3 +15,4 @@ images/*.tif
 images/*.psd
 images/*.ai
 images/*.eps
+
