@@ -11,25 +11,19 @@ import (
 )
 
 var (
+	PORT = ":8080" // TODO: To env file
+
 	ImageController controller.ImageControllerInterface
 )
 
-type Router struct {
-	router *http.ServeMux
-}
-
-func NewRouter(imagesEmbed embed.FS) *Router {
+func Runserver(imagesEmbed embed.FS) error {
 	router := http.NewServeMux() 
-	Router := &Router{router}
-	// Create Controller
+
 	ImageController = controller.NewImageController(imagesEmbed)
+	router.HandleFunc("POST /image/upload", ImageController.SaveImage)
+	router.HandleFunc("GET /image/read", ImageController.ReadImage)
 
-	return Router
-} 
 
-func (r *Router) Runserver(PORT string) {
-	// Create Handlers
-	r.newImageHandler()
 
 	// Create Middleware 
 	middlewareStack := middleware.CreateMiddlewareStack(
@@ -40,7 +34,7 @@ func (r *Router) Runserver(PORT string) {
 
 	server := &http.Server{
 		Addr:    PORT,
-		Handler: middlewareStack(r.router),
+		Handler: middlewareStack(router),
 	}
 
 	log.Println("Server is running on port", PORT)
@@ -48,17 +42,6 @@ func (r *Router) Runserver(PORT string) {
 		os.Exit(1)
 	}
 
-	http.ListenAndServe(PORT, r.router)
-}
-
-func (r *Router) newImageHandler() {
-	r.HandleFunc("POST /upload", ImageController.SaveImage)
-	// get query string 
-		// ex) http://localhost:8080/read?imageName=sample.jpg
-	r.HandleFunc("GET /read", ImageController.ReadImage)
-}
-
-func (r *Router) HandleFunc(pattern string, handler func(http.ResponseWriter, *http.Request)) {
-	r.router.HandleFunc(pattern, handler)
+	return http.ListenAndServe(PORT, router)
 }
 

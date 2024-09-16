@@ -14,9 +14,7 @@ const (
 )
 
 func main() {
-	router := router.NewRouter(
-		images,
-	)
-
-	router.Runserver(PORT)
+	if err := router.Runserver(images); err != nil {
+		panic(err)
+	}
 }
