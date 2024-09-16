@@ -4,10 +4,10 @@ import (
 	"log"
 	"net/http"
 	"os"
-	"embed"
 
 	"image_storage_server/internal/router/middleware"
 	"image_storage_server/internal/handlers"
+	"image_storage_server/internal/service"
 )
 
 func getPort() string {
@@ -19,12 +19,11 @@ func getPort() string {
 	return ":" + port
 }
 
-func Runserver(imagesEmbed embed.FS) error {
+func Runserver() error {
 	router := http.NewServeMux()
 
-	ImageHandler := handlers.NewImageHandler(imagesEmbed)
-
-	// 메서드를 직접 라우팅에 포함
+	ImageService := service.NewImageService()
+	ImageHandler := handlers.NewImageHandler(ImageService)
 	router.HandleFunc("POST /upload", ImageHandler.SaveImage)
 	router.HandleFunc("GET /read", ImageHandler.ReadImage)
 
