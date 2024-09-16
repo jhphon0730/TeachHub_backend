@@ -40,5 +40,5 @@ func (h *ImageHandler) SaveImage(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	utils.WriteJSONResponse(w, http.StatusOK, "Image saved")
+	utils.WriteSuccessResponse(w, http.StatusCreated, "Image Created", nil)
 }

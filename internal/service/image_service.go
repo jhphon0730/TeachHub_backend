@@ -1,13 +1,15 @@
 package service
 
 import (
-	"net/http"
-	"io"
-	"os"
-	"time"
 	"errors"
+	"io"
+	"net/http"
+	"os"
 	"path/filepath"
 	"strings"
+	"time"
+
+	"image_storage_server/pkg/utils"
 )
 
 type ImageService interface {
@@ -24,7 +26,7 @@ func NewImageService(storageDir string) ImageService {
 }
 
 func (s *imageService) ensureStorageDirExists() error {
-	if _, err := os.Stat(s.storageDir); os.IsNotExist(err) {
+	if !utils.DirectoryExists(s.storageDir) {
 		if err := os.MkdirAll(s.storageDir, 0755); err != nil {
 			return err
 		}
@@ -80,7 +82,7 @@ func (s *imageService) SaveImage(r *http.Request) error {
 	}
 
 	filePath := filepath.Join(s.storageDir, filename)
-	if _, err := os.Stat(filePath); !os.IsNotExist(err) {
+	if utils.FileExists(filePath) {
 		return errors.New("file already exists")
 	}
 
