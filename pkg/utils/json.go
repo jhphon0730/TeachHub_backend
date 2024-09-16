@@ -6,36 +6,36 @@ import (
 	"net/http"
 )
 
-// Response 구조체는 성공 및 에러 응답을 위한 공통 구조를 정의합니다.
+// Response 구조체 정의
 type Response struct {
 	Status  string      `json:"status"`
 	Message string      `json:"message"`
 	Data    interface{} `json:"data"`
 }
 
-// WriteJSONResponse는 JSON 형식의 응답을 작성합니다.
-func writeJSONResponse(w http.ResponseWriter, code int, status, message string, data interface{}) {
+// JSON 응답을 처리하는 함수
+func WriteJSONResponse(w http.ResponseWriter, code int, status, message string, data interface{}) {
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(code)
 
-	resp := Response{
+	response := Response{
 		Status:  status,
 		Message: message,
 		Data:    data,
 	}
 
-	if err := json.NewEncoder(w).Encode(resp); err != nil {
+	if err := json.NewEncoder(w).Encode(response); err != nil {
 		log.Printf("Failed to encode JSON response: %v", err)
 		http.Error(w, "Failed to process request", http.StatusInternalServerError)
 	}
 }
 
-// WriteSuccessResponse는 성공 응답을 작성합니다.
-func WriteSuccessResponse(w http.ResponseWriter, code int, data interface{}) {
-	writeJSONResponse(w, code, "success", "", data)
+// 성공 응답을 처리하는 함수
+func WriteSuccessResponse(w http.ResponseWriter, code int, message string, data interface{}) {
+	WriteJSONResponse(w, code, "success", message, data)
 }
 
-// WriteErrorResponse는 에러 응답을 작성합니다.
+// 에러 응답을 처리하는 함수
 func WriteErrorResponse(w http.ResponseWriter, code int, message string) {
-	writeJSONResponse(w, code, "error", message, nil)
+	WriteJSONResponse(w, code, "error", message, nil)
 }
