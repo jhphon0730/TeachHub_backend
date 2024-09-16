@@ -3,7 +3,7 @@ package main
 import (
 	"embed"
 
-	"image_storage_server/router"
+	"image_storage_server/webServer/router"
 )
 
 //go:embed images/*

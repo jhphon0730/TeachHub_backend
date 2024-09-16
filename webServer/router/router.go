@@ -6,22 +6,20 @@ import (
 	"net/http"
 	"embed"
 
-	"image_storage_server/middleware"
-	"image_storage_server/controller"
+	"image_storage_server/webServer/router/middleware"
+	"image_storage_server/webServer/handler"
 )
 
 var (
 	PORT = ":8080" // TODO: To env file
-
-	ImageController controller.ImageControllerInterface
 )
 
 func Runserver(imagesEmbed embed.FS) error {
 	router := http.NewServeMux() 
 
-	ImageController = controller.NewImageController(imagesEmbed)
-	router.HandleFunc("POST /upload", ImageController.SaveImage)
-	router.HandleFunc("GET /read", ImageController.ReadImage)
+	ImageHandler := handler.NewImageHandler(imagesEmbed)
+	router.HandleFunc("POST /upload", ImageHandler.SaveImage)
+	router.HandleFunc("GET /read", ImageHandler.ReadImage)
 
 	// Create Middleware 
 	middlewareStack := middleware.CreateMiddlewareStack(
