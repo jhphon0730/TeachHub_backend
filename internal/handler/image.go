@@ -7,7 +7,7 @@ import (
 	"log"
 	"os"
 	"bytes"
-	"image_storage_server/utils"
+	"image_storage_server/pkg/utils"
 )
 
 // struct & interface

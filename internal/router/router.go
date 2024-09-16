@@ -6,8 +6,8 @@ import (
 	"net/http"
 	"embed"
 
-	"image_storage_server/webServer/router/middleware"
-	"image_storage_server/webServer/handler"
+	"image_storage_server/internal/router/middleware"
+	"image_storage_server/internal/handler"
 )
 
 var (
