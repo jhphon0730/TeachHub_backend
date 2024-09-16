@@ -1,43 +1,49 @@
-package router 
+package router
 
 import (
 	"log"
-	"os"
 	"net/http"
+	"os"
 	"embed"
 
 	"image_storage_server/internal/router/middleware"
 	"image_storage_server/internal/handler"
 )
 
-var (
-	PORT = ":8080" // TODO: To env file
-)
+func getPort() string {
+	port := os.Getenv("PORT")
+
+	if port == "" {
+		port = "8080" // 기본 포트 설정
+	}
+	return ":" + port
+}
 
 func Runserver(imagesEmbed embed.FS) error {
-	router := http.NewServeMux() 
+	router := http.NewServeMux()
 
 	ImageHandler := handler.NewImageHandler(imagesEmbed)
+
+	// 메서드를 직접 라우팅에 포함
 	router.HandleFunc("POST /upload", ImageHandler.SaveImage)
 	router.HandleFunc("GET /read", ImageHandler.ReadImage)
 
-	// Create Middleware 
-	middlewareStack := middleware.CreateMiddlewareStack(
+	// 미들웨어 스택 생성
+	middlewareStack := middleware.ChainMiddleware(
 		middleware.CORS,
 		middleware.Logger,
 	)
 
-
+	// 서버 설정
 	server := &http.Server{
-		Addr:    PORT,
+		Addr:    getPort(),
 		Handler: middlewareStack(router),
 	}
 
-	log.Println("Server is running on port", PORT)
-	if err := server.ListenAndServe(); err != nil {
-		os.Exit(1)
+	log.Println("Server is running on port", getPort())
+	if err := server.ListenAndServe(); err != nil && err != http.ErrServerClosed {
+		log.Fatalf("Server failed: %v", err)
 	}
 
-	return http.ListenAndServe(PORT, router)
+	return nil
 }
-

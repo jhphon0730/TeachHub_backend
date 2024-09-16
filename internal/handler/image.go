@@ -27,13 +27,13 @@ func (ic *ImageHandler) ReadImage(w http.ResponseWriter, r *http.Request) {
 	image_name := r.URL.Query().Get("imageName")
 
 	if len(image_name) == 0 {
-		utils.ResponseError(w, http.StatusBadRequest, "No image name")
+		utils.WriteErrorResponse(w, http.StatusBadRequest, "No image name")
 		return
 	}
 
 	file, err := ic.imagesEmbed.Open("images/" + image_name)
 	if err != nil {
-		utils.ResponseError(w, http.StatusBadRequest, "No image")
+		utils.WriteErrorResponse(w, http.StatusBadRequest, "No image")
 		return
 	}
 	defer file.Close()
@@ -42,14 +42,14 @@ func (ic *ImageHandler) ReadImage(w http.ResponseWriter, r *http.Request) {
 	// Get the file info
 	fileStat, err := file.Stat()
 	if err != nil {
-		utils.ResponseError(w, http.StatusInternalServerError, "No image")
+		utils.WriteErrorResponse(w, http.StatusInternalServerError, "No image")
 		return
 	}
 
 	// Read ( IO Data ) 
 	fileData, err := io.ReadAll(file)
 	if err != nil {
-		utils.ResponseError(w, http.StatusInternalServerError, "No image")
+		utils.WriteErrorResponse(w, http.StatusInternalServerError, "No image")
 		return
 	}
 
@@ -62,14 +62,14 @@ func (ic *ImageHandler) SaveImage(w http.ResponseWriter, r *http.Request) {
 	// Parse the multipart form in the request
 	err := r.ParseMultipartForm(10 << 20) // 10 MB
 	if err != nil {
-		utils.ResponseError(w, http.StatusBadRequest, "Image size too large")
+		utils.WriteErrorResponse(w, http.StatusBadRequest, "Image size too large")
 		return
 	}
 
 	// Get the file from the form
 	file, handler, err := r.FormFile("image")
 	if err != nil {
-		utils.ResponseError(w, http.StatusBadRequest, "Error Retrieving the File")
+		utils.WriteErrorResponse(w, http.StatusBadRequest, "Error Retrieving the File")
 		return
 	}
 	defer file.Close()
@@ -81,25 +81,25 @@ func (ic *ImageHandler) SaveImage(w http.ResponseWriter, r *http.Request) {
 	if _, err := os.Stat(filename); err == nil {
 		log.Println("File is already exists")
 		response := map[string]interface{}{ "url": "http://localhost:8080/read?imageName=" + filename }
-		utils.ResponseJSON(w, http.StatusOK, response)
+		utils.WriteJSONResponse(w, http.StatusOK, response)
 		return
 	}
 
 	// Create a new file in the server ( images/filename )
 	dst, err := os.Create("images/" + filename)
 	if err != nil {
-		utils.ResponseError(w, http.StatusInternalServerError, "Cannot create file")
+		utils.WriteErrorResponse(w, http.StatusInternalServerError, "Cannot create file")
 		return
 	}
 	defer dst.Close()
 
 	// Copy the file to the server
 	if _, err := io.Copy(dst, file); err != nil {
-		utils.ResponseError(w, http.StatusInternalServerError, "Cannot copy file")
+		utils.WriteErrorResponse(w, http.StatusInternalServerError, "Cannot copy file")
 		return
 	}
 
 	response := map[string]interface{}{ "url": "http://localhost:8080/read?imageName=" + filename }
-	utils.ResponseJSON(w, http.StatusOK, response)
+	utils.WriteJSONResponse(w, http.StatusOK, response)
 	return
 }
