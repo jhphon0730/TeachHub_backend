@@ -20,10 +20,8 @@ func Runserver(imagesEmbed embed.FS) error {
 	router := http.NewServeMux() 
 
 	ImageController = controller.NewImageController(imagesEmbed)
-	router.HandleFunc("POST /image/upload", ImageController.SaveImage)
-	router.HandleFunc("GET /image/read", ImageController.ReadImage)
-
-
+	router.HandleFunc("POST /upload", ImageController.SaveImage)
+	router.HandleFunc("GET /read", ImageController.ReadImage)
 
 	// Create Middleware 
 	middlewareStack := middleware.CreateMiddlewareStack(
