@@ -2,17 +2,16 @@ package config
 
 import (
 	"log"
+	"os"
 
 	"github.com/joho/godotenv"
 )
 
 func LoadEnv(filePaths ...string) error {
-	// 환경 변수 파일 경로가 주어지지 않으면 기본 `.env` 파일 로드
 	if len(filePaths) == 0 {
 		filePaths = append(filePaths, ".env")
 	}
 
-	// 환경 변수 로드 시도
 	if err := godotenv.Load(filePaths...); err != nil {
 		log.Printf("Error loading .env file: %v", err)
 		return err
@@ -20,4 +19,20 @@ func LoadEnv(filePaths ...string) error {
 
 	log.Println(".env file loaded successfully")
 	return nil
+}
+
+func GetPort() string {
+	port := os.Getenv("PORT")
+	if port == "" {
+		port = "8080"
+	}
+	return ":" + port
+}
+
+func GetImageStorageDir() string {
+	storageDir := os.Getenv("IMAGE_STORAGE_DIR")
+	if storageDir == "" {
+		storageDir = "images/"
+	}
+	return storageDir
 }

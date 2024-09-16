@@ -6,6 +6,8 @@ import (
 	"os"
 	"time"
 	"errors"
+	"path/filepath"
+	"strings"
 )
 
 type ImageService interface {
@@ -13,21 +15,31 @@ type ImageService interface {
 	SaveImage(r *http.Request) error
 }
 
-type imageService struct{}
-
-// NewImageService는 ImageService를 반환합니다.
-func NewImageService() ImageService {
-	return &imageService{}
+type imageService struct {
+	storageDir string
 }
 
-// ReadImage는 이미지 파일을 읽고 바이트 데이터와 수정 시간을 반환합니다.
+func NewImageService(storageDir string) ImageService {
+	return &imageService{storageDir: storageDir}
+}
+
+func (s *imageService) ensureStorageDirExists() error {
+	if _, err := os.Stat(s.storageDir); os.IsNotExist(err) {
+		if err := os.MkdirAll(s.storageDir, 0755); err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
 func (s *imageService) ReadImage(r *http.Request) ([]byte, time.Time, error) {
 	imageName := r.URL.Query().Get("imageName")
 	if len(imageName) == 0 {
 		return nil, time.Time{}, errors.New("imageName is required")
 	}
 
-	file, err := os.Open("images/" + imageName)
+	filePath := filepath.Join(s.storageDir, imageName)
+	file, err := os.Open(filePath)
 	if err != nil {
 		return nil, time.Time{}, err
 	}
@@ -52,6 +64,10 @@ func (s *imageService) SaveImage(r *http.Request) error {
 		return err
 	}
 
+	if err := s.ensureStorageDirExists(); err != nil {
+		return err
+	}
+
 	file, fileHeader, err := r.FormFile("image")
 	if err != nil {
 		return err
@@ -59,11 +75,16 @@ func (s *imageService) SaveImage(r *http.Request) error {
 	defer file.Close()
 
 	filename := fileHeader.Filename
-	if _, err := os.Stat("images/" + filename); err == nil {
-		return nil // 파일이 이미 존재함
+	if strings.Contains(filename, "..") {
+		return errors.New("invalid file name")
 	}
 
-	dst, err := os.Create("images/" + filename)
+	filePath := filepath.Join(s.storageDir, filename)
+	if _, err := os.Stat(filePath); !os.IsNotExist(err) {
+		return errors.New("file already exists")
+	}
+
+	dst, err := os.Create(filePath)
 	if err != nil {
 		return err
 	}

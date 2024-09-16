@@ -21,3 +21,4 @@ func WriteJSONResponse(w http.ResponseWriter, code int, data interface{}) {
 func WriteErrorResponse(w http.ResponseWriter, code int, message string) {
 	WriteJSONResponse(w, code, map[string]string{"error": message})
 }
+
