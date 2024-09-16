@@ -3,7 +3,7 @@ package main
 import (
 	"embed"
 
-	"image_storage_server/router"
+	"image_storage_server/webServer/router"
 )
 
 //go:embed images/*
@@ -14,9 +14,7 @@ const (
 )
 
 func main() {
-	router := router.NewRouter(
-		images,
-	)
-
-	router.Runserver(PORT)
+	if err := router.Runserver(images); err != nil {
+		panic(err)
+	}
 }
