@@ -3,8 +3,7 @@ package config
 import (
 	"log"
 	"os"
-
-	"github.com/joho/godotenv"
+"github.com/joho/godotenv"
 )
 
 func LoadEnv(filePaths ...string) error {
@@ -35,4 +34,12 @@ func GetImageStorageDir() string {
 		storageDir = "images/"
 	}
 	return storageDir
+}
+
+func GetJWTSecretKey() string {
+	key := os.Getenv("JWT_SECRET_KEY")
+	if key == "" {
+		key = "secret"
+	}
+	return key
 }

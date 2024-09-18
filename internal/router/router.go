@@ -18,6 +18,12 @@ func Runserver() error {
 	router.HandleFunc("POST /upload", ImageHandler.SaveImage)
 	router.HandleFunc("GET /read", ImageHandler.ReadImage)
 
+	UserService := service.NewUserService()
+	UserHandler := handlers.NewUserHandler(UserService)
+	router.HandleFunc("POST /register", UserHandler.RegisterUser)
+	router.HandleFunc("POST /login", UserHandler.LoginUser)
+	router.HandleFunc("GET /find", UserHandler.FindUser)
+
 	// 미들웨어 스택 생성
 	middlewareStack := middleware.ChainMiddleware(
 		middleware.CORS,
