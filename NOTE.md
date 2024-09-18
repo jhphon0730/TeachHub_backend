@@ -1,3 +1,6 @@
+# Image Upload 
+curl -X POST http://localhost:8080/upload -F 'image=@test2.png'
+curl -X GET localhost:8080/read?imageName=test3.png
 ```
 	Root Directory Path: /usr/local/go-storage-service/*
 ```
