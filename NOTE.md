@@ -1,0 +1,47 @@
+```
+	Root Directory Path: /usr/local/go-storage-service/*
+```
+
+# Flow 1 
++----------------+                 +----------------+                  +----------------+
+|   Frontend     |                 |    Backend     |                  |   Database     |
+| (React App)    |                 |   (Go Server)  |                  |                |
++----------------+                 +----------------+                  +----------------+
+       |                                |                                      |
+       |  1. Folder Creation / File Upload Request                             |
+       +--------------------------------->|                                    |
+       |                                |                                      |
+       |                                |                                      |
+       |                                |  2. Handle Request (service)         |
+       |                                |------------------------------------> |
+       |                                |                                      |
+       |                                |    3. Create Folder / Save File       |
+       |                                |    to Storage                          |
+       |                                |    +---------------------------+       |
+       |                                |    |   Update Metadata in DB  |       |
+       |                                |    | (Folder/File Name, Path)  |       |
+       |                                |    +---------------------------+       |
+       |                                |                                      |
+       |                                |                                      |
+       |                                |  4. Send Metadata and File Info       |
+       |                                |<-------------------------------------|
+       |                                |                                      |
+       |                                |                                      |
+       |                                |  5. Return Folder/File List           |
+       |                                |                                      |
+       |                                |------------------------------------>|
+       |                                |                                      |
+       |                                |                                      |
+       |                                |  6. Display List to User              |
+       |                                |                                      |
+       +--------------------------------->|                                      |
+       |                                |                                      |
++----------------+                 +----------------+                  +----------------+
+|   Frontend     |                 |    Backend     |                  |   Database     |
+| (React App)    |                 |   (Go Server)  |                  |                |
++----------------+                 +----------------+                  +----------------+
+
+* 특정 폴더의 Tag
+* 특정 폴더 접근 권한 및 그룹
+
+<hr />
