@@ -10,16 +10,20 @@ import (
 	"image_storage_server/config"
 )
 
+var (
+	ImageService = service.NewImageService(config.GetImageStorageDir())
+	ImageHandler = handlers.NewImageHandler(ImageService)
+
+	UserService = service.NewUserService()
+	UserHandler = handlers.NewUserHandler(UserService)
+)
+
 func Runserver() error {
 	router := http.NewServeMux()
 
-	ImageService := service.NewImageService(config.GetImageStorageDir())
-	ImageHandler := handlers.NewImageHandler(ImageService)
 	router.HandleFunc("POST /upload", ImageHandler.SaveImage)
 	router.HandleFunc("GET /read", ImageHandler.ReadImage)
 
-	UserService := service.NewUserService()
-	UserHandler := handlers.NewUserHandler(UserService)
 	router.HandleFunc("POST /register", UserHandler.RegisterUser)
 	router.HandleFunc("POST /login", UserHandler.LoginUser)
 	router.HandleFunc("GET /find", UserHandler.FindUser)
