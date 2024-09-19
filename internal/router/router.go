@@ -4,7 +4,7 @@ import (
 	"log"
 	"net/http"
 
-	"image_storage_server/internal/router/middleware"
+	"image_storage_server/internal/middleware"
 	"image_storage_server/internal/handlers"
 	"image_storage_server/internal/service"
 	"image_storage_server/config"
