@@ -1,6 +1,8 @@
 package context
 
 import (
+	"html/template"
+	"path/filepath"
 	"net/http"
 )
 
@@ -28,4 +30,20 @@ func (h AppHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		Flash:   &Flash{},
 	}
 	h.HandleFunc(ctx)
+}
+
+func (c *Context) Success(templateName string) {
+	templatePath := filepath.Join("templates", templateName)
+
+	tmpl, err := template.ParseFiles(templatePath)
+	if err != nil {
+		http.Error(c.Writer, "Error parsing template", http.StatusInternalServerError)
+		return
+	}
+
+	err = tmpl.Execute(c.Writer, c.Data)
+	if err != nil {
+		http.Error(c.Writer, "Error executing template", http.StatusInternalServerError)
+		return
+	}
 }

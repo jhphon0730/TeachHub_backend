@@ -26,9 +26,9 @@ func Runserver() error {
 	router.Handle("POST /upload", context.AppHandler{HandleFunc: ImageHandler.SaveImage})
 	router.Handle("GET /read", context.AppHandler{HandleFunc: ImageHandler.ReadImage})
 
-	router.HandleFunc("POST /register", UserHandler.RegisterUser)
-	router.HandleFunc("POST /login", UserHandler.LoginUser)
-	router.HandleFunc("GET /find", UserHandler.FindUser)
+	router.Handle("POST /register", context.AppHandler{HandleFunc: UserHandler.RegisterUser})
+	router.Handle("POST /login", context.AppHandler{HandleFunc: UserHandler.LoginUser})
+	router.Handle("GET /find", context.AppHandler{HandleFunc: UserHandler.FindUser})
 
 	// 미들웨어 스택 생성
 	middlewareStack := middleware.ChainMiddleware(
