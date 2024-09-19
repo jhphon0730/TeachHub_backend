@@ -3,6 +3,7 @@ package router
 import (
 	"log"
 	"net/http"
+	"time"
 
 	"image_storage_server/internal/middleware"
 	"image_storage_server/internal/handlers"
@@ -38,6 +39,9 @@ func Runserver() error {
 	server := &http.Server{
 		Addr:    config.GetPort(),
 		Handler: middlewareStack(router),
+		ReadTimeout: time.Second * 3, // 읽기 시간 초과
+		WriteTimeout: time.Second * 3, // 쓰기 시간 초과
+		IdleTimeout: time.Second * 60, // 핸들러가 리턴되기까지 대기하는 시간
 	}
 
 	log.Println("Server is running on port", config.GetPort())
