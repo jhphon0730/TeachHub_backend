@@ -4,6 +4,8 @@ import (
 	"log"
 	"net/http"
 
+
+	"image_storage_server/internal/context"
 	"image_storage_server/internal/router/middleware"
 	"image_storage_server/internal/handlers"
 	"image_storage_server/internal/service"
@@ -21,8 +23,8 @@ var (
 func Runserver() error {
 	router := http.NewServeMux()
 
-	router.HandleFunc("POST /upload", ImageHandler.SaveImage)
-	router.HandleFunc("GET /read", ImageHandler.ReadImage)
+	router.Handle("POST /upload", context.AppHandler{HandleFunc: ImageHandler.SaveImage})
+	router.Handle("GET /read", context.AppHandler{HandleFunc: ImageHandler.ReadImage})
 
 	router.HandleFunc("POST /register", UserHandler.RegisterUser)
 	router.HandleFunc("POST /login", UserHandler.LoginUser)
