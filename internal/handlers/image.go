@@ -4,7 +4,6 @@ import (
 	"net/http"
 	"bytes"
 
-	"image_storage_server/internal/context"
 	"image_storage_server/internal/service"
 	"image_storage_server/pkg/utils"
 )
@@ -17,29 +16,29 @@ func NewImageHandler(svc service.ImageService) *ImageHandler {
 	return &ImageHandler{service: svc}
 }
 
-func (h *ImageHandler) ReadImage(c *context.Context) {
-	imageName := c.Request.URL.Query().Get("imageName")
+func (h *ImageHandler) ReadImage(w http.ResponseWriter, r *http.Request) {
+	imageName := r.URL.Query().Get("imageName")
 
 	if len(imageName) == 0 {
-		utils.WriteErrorResponse(c.Writer, http.StatusBadRequest, "No image name")
+		utils.WriteErrorResponse(w, http.StatusBadRequest, "No image name")
 		return
 	}
 
-	data, modTime, err := h.service.ReadImage(c.Request)
+	data, modTime, err := h.service.ReadImage(r)
 	if err != nil {
-		utils.WriteErrorResponse(c.Writer, http.StatusBadRequest, "No image")
+		utils.WriteErrorResponse(w, http.StatusBadRequest, "No image")
 		return
 	}
 
-	http.ServeContent(c.Writer, c.Request, imageName, modTime, bytes.NewReader(data))
+	http.ServeContent(w, r, imageName, modTime, bytes.NewReader(data))
 }
 
-func (h *ImageHandler) SaveImage(c *context.Context) {
-	err := h.service.SaveImage(c.Request)
+func (h *ImageHandler) SaveImage(w http.ResponseWriter, r *http.Request) {
+	err := h.service.SaveImage(r)
 	if err != nil {
-		utils.WriteErrorResponse(c.Writer, http.StatusInternalServerError, "Failed to save image")
+		utils.WriteErrorResponse(w, http.StatusInternalServerError, "Failed to save image")
 		return
 	}
 
-	utils.WriteSuccessResponse(c.Writer, http.StatusCreated, "Image Created", nil)
+	utils.WriteSuccessResponse(w, http.StatusCreated, "Image Created", nil)
 }

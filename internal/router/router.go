@@ -4,8 +4,6 @@ import (
 	"log"
 	"net/http"
 
-
-	"image_storage_server/internal/context"
 	"image_storage_server/internal/router/middleware"
 	"image_storage_server/internal/handlers"
 	"image_storage_server/internal/service"
@@ -23,12 +21,12 @@ var (
 func Runserver() error {
 	router := http.NewServeMux()
 
-	router.Handle("POST /upload", context.AppHandler{HandleFunc: ImageHandler.SaveImage})
-	router.Handle("GET /read", context.AppHandler{HandleFunc: ImageHandler.ReadImage})
+	router.HandleFunc("POST /upload", ImageHandler.SaveImage)
+	router.HandleFunc("GET /read", ImageHandler.ReadImage)
 
-	router.Handle("POST /register", context.AppHandler{HandleFunc: UserHandler.RegisterUser})
-	router.Handle("POST /login", context.AppHandler{HandleFunc: UserHandler.LoginUser})
-	router.Handle("GET /find", context.AppHandler{HandleFunc: UserHandler.FindUser})
+	router.HandleFunc("POST /register", UserHandler.RegisterUser)
+	router.HandleFunc("POST /login", UserHandler.LoginUser)
+	router.HandleFunc("GET /find", UserHandler.FindUser)
 
 	// 미들웨어 스택 생성
 	middlewareStack := middleware.ChainMiddleware(
