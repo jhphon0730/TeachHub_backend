@@ -1,11 +1,7 @@
 # Image Upload 
 curl -X POST http://localhost:8080/upload -F 'image=@test2.png'
 curl -X GET localhost:8080/read?imageName=test3.png
-```
-	Root Directory Path: /usr/local/go-storage-service/*
-```
-
-# Flow 1 
+## Flow 1 
 +----------------+                 +----------------+                  +----------------+
 |   Frontend     |                 |    Backend     |                  |   Database     |
 | (React App)    |                 |   (Go Server)  |                  |                |
@@ -44,7 +40,11 @@ curl -X GET localhost:8080/read?imageName=test3.png
 | (React App)    |                 |   (Go Server)  |                  |                |
 +----------------+                 +----------------+                  +----------------+
 
-* 특정 폴더의 Tag
-* 특정 폴더 접근 권한 및 그룹
-
 <hr />
+
+# User
+* Middleware
+* Service
+* Handler
+* Model 
+* utils ( JWT ) 
