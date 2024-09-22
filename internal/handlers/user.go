@@ -20,7 +20,6 @@ func (h *UserHandler) RegisterUser(w http.ResponseWriter, r *http.Request) {
 		utils.WriteErrorResponse(w, http.StatusBadRequest, err.Error())
 		return
 	}
-
 	utils.WriteSuccessResponse(w, http.StatusCreated, "User registered successfully", user)
 }
 
@@ -30,7 +29,6 @@ func (h *UserHandler) LoginUser(w http.ResponseWriter, r *http.Request) {
 		utils.WriteErrorResponse(w, http.StatusUnauthorized, err.Error())
 		return
 	}
-
 	utils.WriteSuccessResponse(w, http.StatusOK, "Login successful", map[string]string{"token": token})
 }
 
@@ -40,12 +38,10 @@ func (h *UserHandler) FindUser(w http.ResponseWriter, r *http.Request) {
 		utils.WriteErrorResponse(w, http.StatusBadRequest, "Email is required")
 		return
 	}
-
 	user, err := h.service.FindUserByEmail(email)
 	if err != nil {
 		utils.WriteErrorResponse(w, http.StatusNotFound, err.Error())
 		return
 	}
-
 	utils.WriteSuccessResponse(w, http.StatusOK, "User found", user)
 }
