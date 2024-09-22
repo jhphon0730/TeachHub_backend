@@ -39,3 +39,8 @@ func WriteSuccessResponse(w http.ResponseWriter, code int, message string, data 
 func WriteErrorResponse(w http.ResponseWriter, code int, message string) {
 	WriteJSONResponse(w, code, "error", message, nil)
 }
+
+// Body로 오는 JSON 데이터를 구조체로 파싱하는 함수
+func ParseJSON(r *http.Request, data interface{}) error {
+	return json.NewDecoder(r.Body).Decode(data)
+}
