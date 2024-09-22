@@ -54,5 +54,10 @@ func Connect() error {
 		return err
 	}
 
+	if err = CreateUserTable(); err != nil {
+		log.Fatalf("Failed to create user table: %v", err)
+		return err
+	}
+
 	return nil
 }

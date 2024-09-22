@@ -3,17 +3,18 @@ package service
 import (
 	"net/http"
 
+
+	"image_storage_server/pkg/utils"
 	"image_storage_server/internal/model"
 )
 
 type UserService interface {
 	RegisterUser(r *http.Request) (*model.User, error)
-	LoginUser(r *http.Request) (string, error)  // Returns a token
+	LoginUser(r *http.Request) (string, error)
 	FindUserByEmail(email string) (*model.User, error)
 }
 
 type userService struct {
-	// Add any necessary fields, like a database connection
 }
 
 func NewUserService() UserService {
@@ -21,11 +22,23 @@ func NewUserService() UserService {
 }
 
 func (s *userService) RegisterUser(r *http.Request) (*model.User, error) {
-	// Extract user details from request
-	// Check if user already exists
-	// Hash password and save user to database
-	// Return user and/or error
-	return &model.User{}, nil
+	var user model.User
+	var err error
+
+	if err = utils.ParseJSON(r, &user); err != nil {
+		return nil, err
+	}
+
+	// TODO: Validate user input
+	// TODO: Check if user already exists
+	// TODO: Hash user password
+
+	user.ID, err = model.InsertUser(&user)
+	if err != nil {
+		return nil, err
+	}
+
+	return &user, nil
 }
 
 func (s *userService) LoginUser(r *http.Request) (string, error) {
