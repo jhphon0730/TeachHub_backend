@@ -1,5 +1,5 @@
-# ENV ? 
-NOT YET 
+# ENV 
+.env
 
 # Images 
 images/*.png
