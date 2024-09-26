@@ -1,4 +1,4 @@
-# Go Storage Server * Image Server 
+# Use net/http 1.23 Go STR 
 
 ## Description 
 This is a simple server that can store and retrieve images. It is built using Go and the http package.
