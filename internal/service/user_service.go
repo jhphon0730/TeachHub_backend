@@ -50,7 +50,17 @@ func (s *userService) RegisterUser(r *http.Request) (*model.User, error) {
 	return &user, nil
 }
 
+// return JWT token, is error 
 func (s *userService) LoginUser(r *http.Request) (string, error) {
+	var user model.User
+	var err error
+
+	if err = utils.ParseJSON(r, &user); err != nil {
+		return "", err
+	}
+	// Null Email 
+	user.Email = "login"
+
 	// Extract user credentials from request
 	// Verify user credentials
 	// Generate and return JWT token
