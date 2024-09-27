@@ -44,3 +44,17 @@ func InsertUser(user *User) (int64, error) {
 
 	return userID, nil
 }
+
+func FindUserByUserName(username string) (*User, error) {
+	query := "SELECT id, username, email, created_at, updated_at FROM users WHERE username = ?"
+
+	var user User
+	err := DB.QueryRow(query, username).Scan(&user.ID, &user.Username, &user.Email, &user.CreatedAt, &user.UpdatedAt)
+	if err != nil {
+		return nil, err
+	}
+
+	return &user, nil
+}
+
+

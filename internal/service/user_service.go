@@ -2,7 +2,7 @@ package service
 
 import (
 	"net/http"
-
+	"errors"
 
 	"image_storage_server/pkg/utils"
 	"image_storage_server/internal/model"
@@ -29,9 +29,18 @@ func (s *userService) RegisterUser(r *http.Request) (*model.User, error) {
 		return nil, err
 	}
 
-	// TODO: Validate user input
-	// TODO: Check if user already exists
-	// TODO: Hash user password
+	// Validate user input
+	if err = utils.CheckValidUserInput(&user); err != nil {
+		return nil, err
+	}
+	// Check if user already exists
+	if alerady_created, err := model.FindUserByUserName(user.Username); err == nil && alerady_created.Username != "" {
+		return nil, errors.New("User already exists")
+	}
+	// Hash user password
+	if err = utils.HashUserPassword(&user); err != nil {
+		return nil, err
+	}
 
 	user.ID, err = model.InsertUser(&user)
 	if err != nil {
