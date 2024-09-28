@@ -3,6 +3,7 @@ package service
 import (
 	"net/http"
 	"errors"
+	"strings"
 
 	"image_storage_server/pkg/utils"
 	"image_storage_server/internal/model"
@@ -30,7 +31,7 @@ func (s *userService) RegisterUser(r *http.Request) (*model.User, error) {
 	}
 
 	// Validate user input
-	if err = utils.CheckValidUserInput(&user); err != nil {
+	if err = utils.CheckValidRegisterUserInput(&user); err != nil {
 		return nil, err
 	}
 	// Check if user already exists
@@ -52,18 +53,23 @@ func (s *userService) RegisterUser(r *http.Request) (*model.User, error) {
 
 // return JWT token, is error 
 func (s *userService) LoginUser(r *http.Request) (string, error) {
-	var user model.User
+	var user utils.LoginUser
 	var err error
 
 	if err = utils.ParseJSON(r, &user); err != nil {
 		return "", err
 	}
-	// Null Email 
-	user.Email = "login"
 
-	// Extract user credentials from request
-	// Verify user credentials
-	// Generate and return JWT token
+	// Validate user input
+	if err = utils.CheckValidLoginUserInput(&user); err != nil {
+		return "", err
+	}
+	// Check if user exists
+	// Decode password
+
+	// if contains "@" => find user by email 
+	// if not contains "@" => find user by username
+
 	return "", nil
 }
 

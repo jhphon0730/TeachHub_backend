@@ -8,8 +8,13 @@ import (
 	"image_storage_server/internal/model"
 )
 
-// check Valid User Input 
-func CheckValidUserInput(user *model.User) error {
+type LoginUser struct {
+	Username  string    `json:"username"`
+	Password  string    `json:"password"`
+}
+
+// check Valid User Input [Register]
+func CheckValidRegisterUserInput(user *model.User) error {
 	if user.Email == "" {
 		return errors.New("Email is required")
 	}
@@ -36,3 +41,25 @@ func HashUserPassword(user *model.User) error {
 	return nil
 }
 
+// check Valid User Input [Login]
+func CheckValidLoginUserInput(user *LoginUser) error {
+	if user.Username == "" {
+		return errors.New("Username is required")
+	}
+	if user.Password == "" {
+		return errors.New("Password is required")
+	}
+	return nil
+}
+
+// hash User Password ( When Register User ) 
+func DecodeUserPassword(user *model.User) error {
+	if user.Password == "" {
+		return errors.New("Password is required")
+	}
+	
+	// algorithm to hash password ( user <go> package SHA256 )
+	hash := sha256.New()
+
+	return nil
+}
