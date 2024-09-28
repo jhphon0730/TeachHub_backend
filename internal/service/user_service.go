@@ -3,7 +3,6 @@ package service
 import (
 	"net/http"
 	"errors"
-	"strings"
 
 	"image_storage_server/pkg/utils"
 	"image_storage_server/internal/model"
@@ -53,27 +52,36 @@ func (s *userService) RegisterUser(r *http.Request) (*model.User, error) {
 
 // return JWT token, is error 
 func (s *userService) LoginUser(r *http.Request) (string, error) {
-	var user utils.LoginUser
+	var login utils.LoginUser
 	var err error
 
-	if err = utils.ParseJSON(r, &user); err != nil {
+	if err = utils.ParseJSON(r, &login); err != nil {
 		return "", err
 	}
-
 	// Validate user input
-	if err = utils.CheckValidLoginUserInput(&user); err != nil {
+	if err = utils.CheckValidLoginUserInput(&login); err != nil {
 		return "", err
 	}
-	// Check if user exists
-	// Decode password
 
-	// if contains "@" => find user by email 
-	// if not contains "@" => find user by username
+	// Find User
+	user, err := model.FindUserByUserName(login.Username)
+	if err != nil {
+		return "", err
+	}
+
+	// Decode password
+	decodedPassword, err := utils.DecodeUserPassword(user)
+	if err != nil {
+		return "", err
+	}
+
+	// Compare password
+	if decodedPassword != user.Password {
+		return "", errors.New("Invalid password")
+	}
+
+	// Generate JWT token
 
 	return "", nil
 }
 
-func (s *userService) FindUserByEmail(email string) (*model.User, error) {
-	// Find and return user by email
-	return &model.User{}, nil
-}

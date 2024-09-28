@@ -33,7 +33,7 @@ func HashUserPassword(user *model.User) error {
 		return errors.New("Password is required")
 	}
 	
-	// algorithm to hash password ( user <go> package SHA256 )
+	// algorithm to hash password ( user <go> package hex SHA256 )
 	hash := sha256.New()
 	hash.Write([]byte(user.Password))
 	user.Password = hex.EncodeToString(hash.Sum(nil))
@@ -53,13 +53,16 @@ func CheckValidLoginUserInput(user *LoginUser) error {
 }
 
 // hash User Password ( When Register User ) 
-func DecodeUserPassword(user *model.User) error {
+func DecodeUserPassword(user *model.User) (string, error) {
 	if user.Password == "" {
-		return errors.New("Password is required")
+		return "", errors.New("Password is required")
 	}
 	
-	// algorithm to hash password ( user <go> package SHA256 )
-	hash := sha256.New()
+	// algorithm to decode password ( user <go> package hex )
+	hash, err := hex.DecodeString(user.Password)
+	if err != nil {
+		return "", err
+	}
 
-	return nil
+	return string(hash), nil
 }
