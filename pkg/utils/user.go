@@ -52,17 +52,21 @@ func CheckValidLoginUserInput(user *LoginUser) error {
 	return nil
 }
 
-// hash User Password ( When Register User ) 
-func DecodeUserPassword(user *model.User) (string, error) {
-	if user.Password == "" {
-		return "", errors.New("Password is required")
-	}
-	
-	// algorithm to decode password ( user <go> package hex )
-	hash, err := hex.DecodeString(user.Password)
-	if err != nil {
-		return "", err
+// verify User Password ( When Login )
+func VerifyUserPassword(inputPassword string, hashedPassword string) error {
+	if inputPassword == "" {
+		return errors.New("Password is required")
 	}
 
-	return string(hash), nil
+	// Hash the input password using the same algorithm (SHA256)
+	hash := sha256.New()
+	hash.Write([]byte(inputPassword))
+	inputPasswordHashed := hex.EncodeToString(hash.Sum(nil))
+
+	// Compare the hashed input password with the stored hashed password
+	if inputPasswordHashed != hashedPassword {
+		return errors.New("Invalid password")
+	}
+
+	return nil
 }

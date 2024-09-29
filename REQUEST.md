@@ -18,3 +18,10 @@ curl -X POST http://localhost:8080/register \
   -H "Content-Type: application/json" \
   -d '{"username": "john_doe", "password": "example123", "email": "john@example.com"}'
 ```
+
+* [Login](#login)
+```
+curl -X POST http://localhost:8080/login \
+  -H "Content-Type: application/json" \
+  -d '{"username": "john_doe", "password": "example123"}'
+```

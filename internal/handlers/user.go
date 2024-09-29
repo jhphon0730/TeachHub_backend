@@ -32,6 +32,7 @@ func (h *UserHandler) LoginUser(w http.ResponseWriter, r *http.Request) {
 	utils.WriteSuccessResponse(w, http.StatusOK, "Login successful", map[string]string{"token": token})
 }
 
+/*
 func (h *UserHandler) FindUser(w http.ResponseWriter, r *http.Request) {
 	email := r.URL.Query().Get("email")
 	if len(email) == 0 {
@@ -45,3 +46,4 @@ func (h *UserHandler) FindUser(w http.ResponseWriter, r *http.Request) {
 	}
 	utils.WriteSuccessResponse(w, http.StatusOK, "User found", user)
 }
+*/

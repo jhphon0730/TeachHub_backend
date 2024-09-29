@@ -11,7 +11,6 @@ import (
 type UserService interface {
 	RegisterUser(r *http.Request) (*model.User, error)
 	LoginUser(r *http.Request) (string, error)
-	FindUserByEmail(email string) (*model.User, error)
 }
 
 type userService struct {
@@ -58,6 +57,7 @@ func (s *userService) LoginUser(r *http.Request) (string, error) {
 	if err = utils.ParseJSON(r, &login); err != nil {
 		return "", err
 	}
+
 	// Validate user input
 	if err = utils.CheckValidLoginUserInput(&login); err != nil {
 		return "", err
@@ -70,18 +70,17 @@ func (s *userService) LoginUser(r *http.Request) (string, error) {
 	}
 
 	// Decode password
-	decodedPassword, err := utils.DecodeUserPassword(user)
+	err = utils.VerifyUserPassword(login.Password, user.Password)
 	if err != nil {
-		return "", err
-	}
-
-	// Compare password
-	if decodedPassword != user.Password {
 		return "", errors.New("Invalid password")
 	}
 
 	// Generate JWT token
+	token, err := utils.GenerateToken(user.ID, user.Username)
+	if err != nil {
+		return "", err
+	}
 
-	return "", nil
+	return token, nil
 }
 
