@@ -15,21 +15,22 @@ func NewUserHandler(svc service.UserService) *UserHandler {
 }
 
 func (h *UserHandler) RegisterUser(w http.ResponseWriter, r *http.Request) {
-	user, err := h.service.RegisterUser(r)
+	_, err := h.service.RegisterUser(r)
 	if err != nil {
 		utils.WriteErrorResponse(w, http.StatusBadRequest, err.Error())
 		return
 	}
-	utils.WriteSuccessResponse(w, http.StatusCreated, "User registered successfully", user)
+	utils.WriteSuccessResponse(w, http.StatusCreated, "User registered successfully", nil)
 }
 
 func (h *UserHandler) LoginUser(w http.ResponseWriter, r *http.Request) {
-	token, err := h.service.LoginUser(r)
+	user, token, err := h.service.LoginUser(r)
 	if err != nil {
 		utils.WriteErrorResponse(w, http.StatusUnauthorized, err.Error())
 		return
 	}
-	utils.WriteSuccessResponse(w, http.StatusOK, "Login successful", map[string]string{"token": token})
+	utils.WriteSuccessResponse(w, http.StatusOK, "Login successful", map[string]interface{}{"token": token, "user": user})
+	// 위 코드의 any는 interface{}와 같은 의미로 사용된다.
 }
 
 /*
