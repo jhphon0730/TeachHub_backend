@@ -3,8 +3,9 @@ package utils
 import (
 	"time"
 
-	"github.com/dgrijalva/jwt-go"
 	"image_storage_server/config"
+
+	"github.com/dgrijalva/jwt-go"
 )
 
 var jwtKey = []byte(config.GetJWTSecretKey())
@@ -48,3 +49,4 @@ func ValidateToken(tokenStr string) (*Claims, error) {
 
 	return claims, nil
 }
+

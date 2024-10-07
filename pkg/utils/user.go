@@ -2,10 +2,11 @@ package utils
 
 import (
 	"errors"
-	"crypto/sha256"
 	"encoding/hex"
+	"crypto/sha256"
 
 	"image_storage_server/internal/model"
+	"image_storage_server/internal/model/dto"
 )
 
 type LoginUser struct {
@@ -66,6 +67,18 @@ func VerifyUserPassword(inputPassword string, hashedPassword string) error {
 	// Compare the hashed input password with the stored hashed password
 	if inputPasswordHashed != hashedPassword {
 		return errors.New("Invalid password")
+	}
+
+	return nil
+}
+
+// check Valid User Input [Update]
+func CheckValidUpdateUserInput(inp *dto.UpdateUserDTO) error {
+	if inp.Username == "" {
+		return errors.New("Username is required")
+	}
+	if inp.Email == "" {
+		return errors.New("Email is required")
 	}
 
 	return nil

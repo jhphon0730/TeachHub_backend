@@ -98,9 +98,53 @@ func FindUserByEmail(email string) (*User, error) {
 	return &user, nil
 }
 
+func UpdateUser(user *User) error {
+	tx, err := DB.Begin()
+	if err != nil {
+		return err
+	}
+
+	query := "UPDATE users SET username = ?, email = ?, bio = ? WHERE id = ?"
+	_, err = DB.Exec(query, user.Username, user.Email, user.Bio, user.ID)
+	if err != nil {
+		return err
+	}
+
+	// Delete Skills, Insert Skills
+	err = DeleteAllSkill(user.ID)
+	if err != nil {
+		return err
+	}
+	for _, skill := range user.Skills {
+		err = InsertSkill(user.ID, skill)
+		if err != nil {
+			return err
+		}
+	}
+
+	err = tx.Commit()
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
 func InsertSkill(userID int64, skill string) error {
 	query := "INSERT INTO skills (user_id, skill) VALUES (?, ?)"
 	_, err := DB.Exec(query, userID, skill)
+	return err
+}
+
+func DeleteSkill(userID int64, skill string) error {
+	query := "DELETE FROM skills WHERE user_id = ? AND skill = ?"
+	_, err := DB.Exec(query, userID, skill)
+	return err
+}
+
+func DeleteAllSkill(userID int64) error {
+	query := "DELETE FROM skills WHERE user_id = ?"
+	_, err := DB.Exec(query, userID)
 	return err
 }
 

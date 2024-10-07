@@ -6,11 +6,13 @@ import (
 
 	"image_storage_server/pkg/utils"
 	"image_storage_server/internal/model"
+	"image_storage_server/internal/model/dto"
 )
 
 type UserService interface {
 	RegisterUser(r *http.Request) (*model.User, error)
 	LoginUser(r *http.Request) (*model.User, string, error)
+	UpdateUser(r *http.Request) error
 }
 
 type userService struct {
@@ -84,3 +86,35 @@ func (s *userService) LoginUser(r *http.Request) (*model.User, string, error) {
 	return user, token, nil
 }
 
+// return error 
+func (s *userService) UpdateUser(r *http.Request) error {
+	var update_user_dto dto.UpdateUserDTO
+	var err error
+
+	if err = utils.ParseJSON(r, &update_user_dto); err != nil {
+		return err
+	}
+
+	// Validate user input
+	if err = utils.CheckValidUpdateUserInput(&update_user_dto); err != nil {
+		return err
+	}
+
+	// Find User
+	user, err := model.FindUserByUserName(update_user_dto.Username)
+	if err != nil {
+		return err
+	}
+
+	// Update User
+	user.Username = update_user_dto.Username
+	user.Email = update_user_dto.Email
+	user.Bio = update_user_dto.Bio
+	user.Skills = update_user_dto.Skills
+
+	err = model.UpdateUser(user)
+	if err != nil {
+		return err
+	}
+	return nil
+}

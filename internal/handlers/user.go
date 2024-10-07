@@ -33,18 +33,3 @@ func (h *UserHandler) LoginUser(w http.ResponseWriter, r *http.Request) {
 	// 위 코드의 any는 interface{}와 같은 의미로 사용된다.
 }
 
-/*
-func (h *UserHandler) FindUser(w http.ResponseWriter, r *http.Request) {
-	email := r.URL.Query().Get("email")
-	if len(email) == 0 {
-		utils.WriteErrorResponse(w, http.StatusBadRequest, "Email is required")
-		return
-	}
-	user, err := h.service.FindUserByEmail(email)
-	if err != nil {
-		utils.WriteErrorResponse(w, http.StatusNotFound, err.Error())
-		return
-	}
-	utils.WriteSuccessResponse(w, http.StatusOK, "User found", user)
-}
-*/
