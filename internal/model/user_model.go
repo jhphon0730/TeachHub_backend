@@ -9,6 +9,8 @@ type User struct {
 	Username  string    `json:"username"`
 	Email     string    `json:"email"`
 	Password  string    `json:"password"`
+	Bio       string    `json:"bio"`
+	Skills    []string  `json:"skills"` // skills를 배열로 처리
 	CreatedAt time.Time `json:"created_at"`
 	UpdatedAt time.Time `json:"updated_at"`
 }
@@ -20,11 +22,24 @@ func CreateUserTable() error {
 		username VARCHAR(50) NOT NULL,
 		email VARCHAR(50) NOT NULL,
 		password VARCHAR(255) NOT NULL,
+		bio VARCHAR(255),
 		created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 		updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 	)
 	`
+	_, err := DB.Exec(createTableQuery)
+	return err
+}
 
+func CreateSkillsTable() error {
+	createTableQuery := `
+	CREATE TABLE IF NOT EXISTS skills (
+		id INT AUTO_INCREMENT PRIMARY KEY,
+		user_id INT,
+		skill VARCHAR(100),
+		FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+	)
+	`
 	_, err := DB.Exec(createTableQuery)
 	return err
 }
@@ -54,6 +69,13 @@ func FindUserByUserName(username string) (*User, error) {
 		return nil, err
 	}
 
+	// find skills
+	skills, err := GetSkillsByUserID(user.ID)
+	if err != nil {
+		return nil, err
+	}
+	user.Skills = skills
+
 	return &user, nil
 }
 
@@ -66,5 +88,39 @@ func FindUserByEmail(email string) (*User, error) {
 		return nil, err
 	}
 
+	// find skills
+	skills, err := GetSkillsByUserID(user.ID)
+	if err != nil {
+		return nil, err
+	}
+	user.Skills = skills
+
 	return &user, nil
+}
+
+func InsertSkill(userID int64, skill string) error {
+	query := "INSERT INTO skills (user_id, skill) VALUES (?, ?)"
+	_, err := DB.Exec(query, userID, skill)
+	return err
+}
+
+func GetSkillsByUserID(userID int64) ([]string, error) {
+	query := "SELECT skill FROM skills WHERE user_id = ?"
+	
+	rows, err := DB.Query(query, userID)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	var skills []string
+	for rows.Next() {
+		var skill string
+		if err := rows.Scan(&skill); err != nil {
+			return nil, err
+		}
+		skills = append(skills, skill)
+	}
+
+	return skills, nil
 }
