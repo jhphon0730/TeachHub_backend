@@ -27,7 +27,7 @@ func Runserver() error {
 
 	router.HandleFunc("POST /register", UserHandler.RegisterUser)
 	router.HandleFunc("POST /login", UserHandler.LoginUser)
-	router.HandleFunc("PUT /user", UserHandler.UpdateUser)
+	router.HandleFunc("PUT /update", UserHandler.UpdateUser)
 
 
 	// 미들웨어 스택 생성

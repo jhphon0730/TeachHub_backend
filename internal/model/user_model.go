@@ -115,10 +115,12 @@ func UpdateUser(user *User) error {
 	if err != nil {
 		return err
 	}
-	for _, skill := range user.Skills {
-		err = InsertSkill(user.ID, skill)
-		if err != nil {
-			return err
+	if len(user.Skills) != 0 {
+		for _, skill := range user.Skills {
+			err = InsertSkill(user.ID, skill)
+			if err != nil {
+				return err
+			}
 		}
 	}
 
