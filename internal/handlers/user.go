@@ -33,3 +33,12 @@ func (h *UserHandler) LoginUser(w http.ResponseWriter, r *http.Request) {
 	// 위 코드의 any는 interface{}와 같은 의미로 사용된다.
 }
 
+
+func (h *UserHandler) UpdateUser(w http.ResponseWriter, r *http.Request) {
+	err := h.service.UpdateUser(r)
+	if err != nil {
+		utils.WriteErrorResponse(w, http.StatusBadRequest, err.Error())
+		return
+	}
+	utils.WriteSuccessResponse(w, http.StatusOK, "User updated successfully", nil)
+}
