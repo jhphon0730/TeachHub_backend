@@ -106,6 +106,13 @@ func (s *userService) UpdateUser(r *http.Request) error {
 		return err
 	}
 
+	// Check Valid User Password, Input Password
+	// Decode password
+	err = utils.VerifyUserPassword(update_user_dto.Password, user.Password)
+	if err != nil {
+		return errors.New("Invalid password")
+	}
+
 	// Update User
 	user.Username = update_user_dto.Username
 	user.Email = update_user_dto.Email

@@ -80,6 +80,9 @@ func CheckValidUpdateUserInput(inp *dto.UpdateUserDTO) error {
 	if inp.Email == "" {
 		return errors.New("Email is required")
 	}
+	if inp.Password == "" {
+		return errors.New("Password is required")
+	}
 
 	return nil
 }
