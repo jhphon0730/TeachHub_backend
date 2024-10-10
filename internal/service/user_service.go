@@ -117,7 +117,6 @@ func (s *userService) UpdateUser(r *http.Request) error {
 	user.Username = update_user_dto.Username
 	user.Email = update_user_dto.Email
 	user.Bio = update_user_dto.Bio
-	user.Skills = update_user_dto.Skills
 
 	err = model.UpdateUser(user)
 	if err != nil {

@@ -59,10 +59,6 @@ func Connect() error {
 		log.Fatalf("Failed to create user table: %v", err)
 		return err
 	}
-	if err = CreateSkillsTable(); err != nil {
-		log.Fatalf("Failed to create skills table: %v", err)
-		return err
-	}
 
 	return nil
 }
