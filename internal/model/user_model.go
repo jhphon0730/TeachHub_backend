@@ -5,11 +5,12 @@ import (
 )
 
 type User struct {
-	ID        int64       `json:"id"`
+	ID        int64     `json:"id"`
 	Username  string    `json:"username"`
 	Email     string    `json:"email"`
 	Password  string    `json:"password"`
 	Bio       string    `json:"bio"`
+	Role 			string `json:"role"`
 	CreatedAt time.Time `json:"created_at"`
 	UpdatedAt time.Time `json:"updated_at"`
 }
@@ -22,6 +23,7 @@ func CreateUserTable() error {
 		email VARCHAR(50) NOT NULL,
 		password VARCHAR(255) NOT NULL,
 		bio VARCHAR(255),
+		role ENUM('student', 'instructor', 'admin') NOT NULL DEFAULT 'student',
 		created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 		updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 	)
