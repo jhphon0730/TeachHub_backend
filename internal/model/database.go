@@ -54,9 +54,23 @@ func Connect() error {
 		return err
 	}
 
-	// Users
+	// Users // 
 	if err = CreateUserTable(); err != nil {
 		log.Fatalf("Failed to create user table: %v", err)
+		return err
+	}
+
+	// Courses //
+	if err = CreateCoursesTable(); err != nil {
+		log.Fatalf("Failed to create courses table: %v", err)
+		return err
+	}
+	if err = CreateEnrollmentsTable(); err != nil {
+		log.Fatalf("Failed to create enrollments table: %v", err)
+		return err
+	}
+	if err = CreateEnrollmentsTable(); err != nil {
+		log.Fatalf("Failed to create enrollments table: %v", err)
 		return err
 	}
 
