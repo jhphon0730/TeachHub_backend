@@ -46,3 +46,15 @@ curl -X GET http://localhost:8080/course?instructor_id=3 -H "Content-Type: appli
 * [FindEnrollmentsByStudentID](학생ID로 수강신청 조회)
 ```
 ```
+
+# Dashboard
+* [InitialStudentDashboard](사용자 대시보드 초기화)
+```
+curl -X GET http://localhost:8080/dashboard/student/initial -H "Content-Type: application/json" -H "Authorization: Bearer "
+```
+
+* [InitialInstructorDashboard](강사 대시보드 초기화)
+```
+curl -X GET http://localhost:8080/dashboard/instructor/initial -H "Content-Type: application/json" -H "Authorization: Bearer "
+```
+

@@ -30,6 +30,10 @@ var (
 	// ############################ Course ############################
 	CourseService = service.NewCourseService()
 	CourseHandler = handlers.NewCourseHandler(CourseService)
+
+	// ############################ Course ############################
+	DashboardService = service.NewDashboardService()
+	DashboardHandler = handlers.NewDashboardHandler(DashboardService)
 )
 
 func Runserver() error {
@@ -43,6 +47,10 @@ func Runserver() error {
 	// ############################ Course ############################
 	router.Handle("POST /course", authMiddlewareStack(http.HandlerFunc(CourseHandler.CreateCourse)))
 	router.Handle("GET /course", authMiddlewareStack(http.HandlerFunc(CourseHandler.GetCourseByInstructorID)))
+
+	// ############################ Course ############################
+	router.Handle("GET /dashboard/student/initial", authMiddlewareStack(http.HandlerFunc(DashboardHandler.InitialStudentDashboard)))
+	router.Handle("GET /dashboard/instructor/initial", authMiddlewareStack(http.HandlerFunc(DashboardHandler.InitialInstructorDashboard)))
 
 	// 서버 설정
 	server := &http.Server{
