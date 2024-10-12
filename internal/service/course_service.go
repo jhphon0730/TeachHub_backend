@@ -11,6 +11,7 @@ import (
 
 type CourseService interface {
 	CreateCourse(r *http.Request) (error)
+	GetCourseByInstructorID(r *http.Request) ([]model.Courses, error)
 }
 
 type courseService struct { }
@@ -45,4 +46,36 @@ func (c *courseService) CreateCourse(r *http.Request) error {
 	}
 
 	return nil
+}
+
+/* 강사의 ID로 강의 조회 */
+func (c *courseService) GetCourseByInstructorID(r *http.Request) ([]model.Courses, error) {
+	_, ok := r.Context().Value(middleware.UserContextKey).(*model.User)
+	if !ok {
+		return nil, errors.New("User not found")
+	}
+	
+	instructor_id := r.URL.Query().Get("instructor_id")
+	if len(instructor_id) == 0 {
+		return nil, errors.New("instructor_id is empty")
+	}
+
+	// id type is int64
+	instructorID, err := utils.ParseInt64(instructor_id)
+	user, err := model.FindUserByID(instructorID)
+	if err != nil || user == nil {
+		return nil, errors.New("User not found")
+	}
+
+	// Check if the user is an instructor
+	if user.Role != "instructor" {
+		return nil, errors.New("User is not an instructor")
+	}
+
+	courses, err := model.FindCourseByInstructorID(user.ID)
+	if err != nil {
+		return nil, err
+	}
+
+	return courses, nil
 }

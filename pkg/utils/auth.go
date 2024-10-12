@@ -2,6 +2,7 @@ package utils
 
 import (
 	"time"
+	"strconv"
 
 	"image_storage_server/config"
 
@@ -50,3 +51,8 @@ func ValidateToken(tokenStr string) (*Claims, error) {
 	return claims, nil
 }
 
+
+// string to int64
+func ParseInt64(str string) (int64, error) {
+	return strconv.ParseInt(str, 10, 64)
+}

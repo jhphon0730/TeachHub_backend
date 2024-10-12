@@ -36,12 +36,13 @@ func Runserver() error {
 	router := http.NewServeMux()
 
 	// ############################ User ############################
-	router.Handle("/register", middlewareStack(http.HandlerFunc(UserHandler.RegisterUser)))
-	router.Handle("/login", middlewareStack(http.HandlerFunc(UserHandler.LoginUser)))
-	router.Handle("/update", middlewareStack(http.HandlerFunc(UserHandler.UpdateUser)))
+	router.Handle("POST /register", middlewareStack(http.HandlerFunc(UserHandler.RegisterUser)))
+	router.Handle("POST /login", middlewareStack(http.HandlerFunc(UserHandler.LoginUser)))
+	router.Handle("PATCH /update", middlewareStack(http.HandlerFunc(UserHandler.UpdateUser)))
 
 	// ############################ Course ############################
-	router.Handle("/course", authMiddlewareStack(http.HandlerFunc(CourseHandler.CreateCourse)))
+	router.Handle("POST /course", authMiddlewareStack(http.HandlerFunc(CourseHandler.CreateCourse)))
+	router.Handle("GET /course", authMiddlewareStack(http.HandlerFunc(CourseHandler.GetCourseByInstructorID)))
 
 	// 서버 설정
 	server := &http.Server{

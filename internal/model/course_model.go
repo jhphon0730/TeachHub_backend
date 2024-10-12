@@ -91,7 +91,7 @@ func FindAllCourses() ([]Courses, error) {
 }
 
 // 강사가 생성한 강의들 모두 조회 
-func FindCoursesByInstructorID(instructor_id int64) ([]Courses, error) {
+func FindCourseByInstructorID(instructor_id int64) ([]Courses, error) {
 	query := "SELECT id, instructor_id, title, description, created_at, updated_at FROM courses WHERE instructor_id = ?"
 
 	rows, err := DB.Query(query, instructor_id)
@@ -113,7 +113,7 @@ func FindCoursesByInstructorID(instructor_id int64) ([]Courses, error) {
 }
 
 // 강의 ID로 강의 조회
-func FindCoursesByCourseID(course_id int64) (*Courses, error) {
+func FindCourseByCourseID(course_id int64) (*Courses, error) {
 	query := "SELECT id, instructor_id, title, description, created_at, updated_at FROM courses WHERE id = ?"
 
 	var courses Courses
@@ -126,10 +126,10 @@ func FindCoursesByCourseID(course_id int64) (*Courses, error) {
 }
 
 // 수강 내역 테이블에서 조회한 데이터 ( course_id ) 로 강의 조회 
-func FindCoursesByEnrollments(enrollments []Enrollments) ([]Courses, error) {
+func FindCourseByEnrollments(enrollments []Enrollments) ([]Courses, error) {
 	var courses []Courses
 	for _, enrollment := range enrollments {
-		course, err := FindCoursesByCourseID(enrollment.Courses_id)
+		course, err := FindCourseByCourseID(enrollment.Courses_id)
 		if err != nil {
 			return nil, err
 		}

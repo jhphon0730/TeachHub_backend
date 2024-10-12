@@ -25,3 +25,12 @@ func (c *CourseHandler) CreateCourse(w http.ResponseWriter, r *http.Request) {
 	}
 	utils.WriteSuccessResponse(w, http.StatusCreated, "Course created successfully", nil)
 }
+
+func (c *CourseHandler) GetCourseByInstructorID(w http.ResponseWriter, r *http.Request) {
+	courses, err := c.service.GetCourseByInstructorID(r)
+	if err != nil {
+		utils.WriteErrorResponse(w, http.StatusBadRequest, err.Error())
+		return
+	}
+	utils.WriteSuccessResponse(w, http.StatusOK, "Courses retrieved successfully", courses)
+}

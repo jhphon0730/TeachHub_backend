@@ -18,42 +18,31 @@ curl -X POST http://localhost:8080/login \
 ## Course
 * [Create](강의 생성)
 ```
-curl -X POST http://localhost:8080/course \
-    -H "Content-Type: application/json" \
-    -d '{"title": "인공지능 뿌시기", "description": "인공지능의 시작을 알린 퍼텝스톤", "instructor_id": 1}'
-
 curl -X POST http://localhost:8080/course -H "Content-Type: application/json" -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MiwidXNlcm5hbWUiOiJ0ZXN0ZXIiLCJleHAiOjE3Mjg4MjA4MzJ9.HF2wCMYGl60YjGojXk6wtQDvCSHQVgHtiQcligODdp8" -d '{"title": "인공지능 뿌시기", "description": "인공지능의 시작을 알린 퍼텝스톤"}'
+```
+
+* [GetCourseByInstructorID](강의ID로 강의 조회)
+```
+curl -X GET http://localhost:8080/course?instructor_id=1 -H "Content-Type: application/json" -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MiwidXNlcm5hbWUiOiJ0ZXN0ZXIiLCJleHAiOjE3Mjg4MjA4MzJ9.HF2wCMYGl60YjGojXk6wtQDvCSHQVgHtiQcligODdp8"
 ```
 
 * [FindAllCourses](모든 강의 조회)
 ```
-curl -X GET http://localhost:8080/course \
 ```
 
 * [FindCoursesByInstructorID](강사의 강의들 조회)
 ```
-curl -X GET http://localhost:8080/course/instructor/1 \
-```
-
-* [FindCoursesByCourseID](강의ID로 강의 조회)
-```
-curl -X GET http://localhost:8080/course/1 \
 ```
 
 * [FindCoursesByEnrollments](학생이 수강신청한 강의들 조회)
 ```
-curl -X GET http://localhost:8080/course/enrollments/1 \
 ```
 
 ## Enrollments
 * [InsertEnrollmentsByCourseID](강의ID, 학생ID로 수강신청)
 ```
-curl -X POST http://localhost:8080/course/enrollments \
-  -H "Content-Type: application/json" \
-  -d '{"courseID": 1, "studentID": 1}'
 ```
 
 * [FindEnrollmentsByStudentID](학생ID로 수강신청 조회)
 ```
-curl -X GET http://localhost:8080/course/enrollments/student/1 \
 ```
