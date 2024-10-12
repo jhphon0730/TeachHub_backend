@@ -148,8 +148,8 @@ func CreateEnrollmentsTable() error {
 		student_id INT NOT NULL,
 		enrollment_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 
-		FOREIGN KEY (courses_id) REFERENCES courses(id),
-		FOREIGN KEY (student_id) REFERENCES users(id)
+		FOREIGN KEY (courses_id) REFERENCES courses(id) ON DELETE CASCADE,
+		FOREIGN KEY (student_id) REFERENCES users(id) ON DELETE CASCADE
 	)
 	`
 	_, err := DB.Exec(createTableQuery)

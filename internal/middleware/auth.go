@@ -1,8 +1,52 @@
 package middleware
 
-// auth ( JWT ) 미들웨어 필수 목록으로는
-// 1. 사용자가 있는 지 확인 ( Beer 확인 ) -> Context에 저장 이후 Handler로 보내기
-// 2. 관리자 사용자인지 확인해주는 Middleware ( "/admin*" ) 전용 Handler 
-	// -> JWT 토큰 유효 확인은 pkg/auth/auth.go 에서 처리
+import (
+	"log"
+	"context"
+	"strings"
+	"net/http"
 
+	"image_storage_server/pkg/utils"
+	"image_storage_server/internal/model"
+)
 
+type contextKey string
+
+const UserContextKey contextKey = "user"
+
+// JWT 인증 미들웨어
+func Auth(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		// Authorization 헤더에서 토큰 추출
+		authHeader := r.Header.Get("Authorization")
+		if authHeader == "" {
+			http.Error(w, "Authorization header is required", http.StatusUnauthorized)
+			return
+		}
+
+		// Bearer 토큰 확인
+		tokenStr := strings.TrimPrefix(authHeader, "Bearer ")
+		if tokenStr == authHeader {
+			http.Error(w, "Invalid authorization token format", http.StatusUnauthorized)
+			return
+		}
+
+		// 토큰 검증
+		claims, err := utils.ValidateToken(tokenStr)
+		if err != nil {
+			http.Error(w, "Invalid token", http.StatusUnauthorized)
+			return
+		}
+
+		// ID 출력
+		user, err := model.FindUserByID(claims.ID)
+		log.Println(user)
+		if err != nil {
+			http.Error(w, "User not found", http.StatusUnauthorized)
+		}
+
+		// 사용자 정보를 Context에 저장
+		ctx := context.WithValue(r.Context(), UserContextKey, user)
+		next.ServeHTTP(w, r.WithContext(ctx))
+	})
+}

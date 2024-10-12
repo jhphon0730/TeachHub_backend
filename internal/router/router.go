@@ -12,9 +12,22 @@ import (
 )
 
 var (
+	// Default Middleware Stacks
+	middlewareStack = middleware.ChainMiddleware(
+		middleware.CORS,
+		middleware.Logger,
+	)
+	authMiddlewareStack = middleware.ChainMiddleware(
+		middleware.CORS,
+		middleware.Logger,
+		middleware.Auth,
+	)
+
+	// ############################ User ############################
 	UserService = service.NewUserService()
 	UserHandler = handlers.NewUserHandler(UserService)
 
+	// ############################ Course ############################
 	CourseService = service.NewCourseService()
 	CourseHandler = handlers.NewCourseHandler(CourseService)
 )
@@ -23,18 +36,12 @@ func Runserver() error {
 	router := http.NewServeMux()
 
 	// ############################ User ############################
-	router.HandleFunc("POST /register", UserHandler.RegisterUser)
-	router.HandleFunc("POST /login", UserHandler.LoginUser)
-	router.HandleFunc("PUT /update", UserHandler.UpdateUser)
+	router.Handle("/register", middlewareStack(http.HandlerFunc(UserHandler.RegisterUser)))
+	router.Handle("/login", middlewareStack(http.HandlerFunc(UserHandler.LoginUser)))
+	router.Handle("/update", middlewareStack(http.HandlerFunc(UserHandler.UpdateUser)))
 
 	// ############################ Course ############################
-	router.HandleFunc("POST /course", CourseHandler.CreateCourse)
-
-	// 미들웨어 스택 생성
-	middlewareStack := middleware.ChainMiddleware(
-		middleware.CORS,
-		middleware.Logger,
-	)
+	router.Handle("/course", authMiddlewareStack(http.HandlerFunc(CourseHandler.CreateCourse)))
 
 	// 서버 설정
 	server := &http.Server{

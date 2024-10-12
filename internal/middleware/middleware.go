@@ -15,3 +15,4 @@ func ChainMiddleware(xs ...Middleware) Middleware {
 		return next
 	}
 }
+

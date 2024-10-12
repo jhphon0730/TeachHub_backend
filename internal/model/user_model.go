@@ -49,10 +49,10 @@ func InsertUser(user *User) (int64, error) {
 }
 
 func FindUserByID(id int64) (*User, error) {
-	query := "SELECT id, username, email, bio, role, created_at, updated_at FROM users WHERE id = ?"
+	query := "SELECT id, username, email, password, bio, role, created_at, updated_at FROM users WHERE id = ?"
 
 	var user User
-	err := DB.QueryRow(query, id).Scan(&user.ID, &user.Username, &user.Email, &user.Bio, &user.Role, &user.CreatedAt, &user.UpdatedAt)
+	err := DB.QueryRow(query, id).Scan(&user.ID, &user.Username, &user.Email, &user.Password, &user.Bio, &user.Role, &user.CreatedAt, &user.UpdatedAt)
 	if err != nil {
 		return nil, err
 	}
@@ -61,10 +61,10 @@ func FindUserByID(id int64) (*User, error) {
 }
 
 func FindUserByUserName(username string) (*User, error) {
-	query := "SELECT id, username, email, bio, role, password, created_at, updated_at FROM users WHERE username = ?"
+	query := "SELECT id, username, email, password, bio, role, created_at, updated_at FROM users WHERE username = ?"
 
 	var user User
-	err := DB.QueryRow(query, username).Scan(&user.ID, &user.Username, &user.Email, &user.Bio, &user.Role, &user.CreatedAt, &user.UpdatedAt)
+	err := DB.QueryRow(query, username).Scan(&user.ID, &user.Username, &user.Email, &user.Password, &user.Bio, &user.Role, &user.CreatedAt, &user.UpdatedAt)
 	if err != nil {
 		return nil, err
 	}
@@ -73,10 +73,10 @@ func FindUserByUserName(username string) (*User, error) {
 }
 
 func FindUserByEmail(email string) (*User, error) {
-	query := "SELECT id, username, email, bio, role, created_at, updated_at FROM users WHERE email = ?"
+	query := "SELECT id, username, email, password, bio, role, created_at, updated_at FROM users WHERE email = ?"
 
 	var user User
-	err := DB.QueryRow(query, email).Scan(&user.ID, &user.Username, &user.Email, &user.Bio, &user.Role, &user.CreatedAt, &user.UpdatedAt)
+	err := DB.QueryRow(query, email).Scan(&user.ID, &user.Username, &user.Email, &user.Password, &user.Bio, &user.Role, &user.CreatedAt, &user.UpdatedAt)
 	if err != nil {
 		return nil, err
 	}
