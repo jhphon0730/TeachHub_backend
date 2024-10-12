@@ -27,7 +27,7 @@ curl -X POST http://localhost:8080/course \
 curl -X GET http://localhost:8080/course \
 ```
 
-* [FindCoursesByInstructorID](강사의 강의 조회)
+* [FindCoursesByInstructorID](강사의 강의들 조회)
 ```
 curl -X GET http://localhost:8080/course/instructor/1 \
 ```

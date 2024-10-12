@@ -45,7 +45,7 @@ func (s *userService) RegisterUser(r *http.Request) (*model.User, error) {
 
 	user.ID, err = model.InsertUser(&user)
 	if err != nil {
-		return nil, err
+		return nil, errors.New("Failed to register user")
 	}
 
 	return &user, nil
@@ -68,7 +68,7 @@ func (s *userService) LoginUser(r *http.Request) (*model.User, string, error) {
 	// Find User
 	user, err := model.FindUserByUserName(login.Username)
 	if err != nil {
-		return nil, "", err
+		return nil, "", errors.New("User not found") // name not found
 	}
 
 	// Decode password

@@ -41,7 +41,7 @@ func CreateCoursesTable() error {
 }
 
 // 새로운 강의 추가 
-func InsertCourses(courses *Courses) (int64, error) {
+func InsertCourse(courses *Courses) (int64, error) {
 	query := "INSERT INTO courses (instructor_id, title, description) VALUES (?, ?, ?)"
 
 	result, err := DB.Exec(query, courses.Instructor_id, courses.Title, courses.Description)

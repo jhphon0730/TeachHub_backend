@@ -69,10 +69,6 @@ func Connect() error {
 		log.Fatalf("Failed to create enrollments table: %v", err)
 		return err
 	}
-	if err = CreateEnrollmentsTable(); err != nil {
-		log.Fatalf("Failed to create enrollments table: %v", err)
-		return err
-	}
 
 	return nil
 }
