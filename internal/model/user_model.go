@@ -22,7 +22,7 @@ func CreateUserTable() error {
 		username VARCHAR(50) NOT NULL,
 		email VARCHAR(50) NOT NULL,
 		password VARCHAR(255) NOT NULL,
-		bio VARCHAR(255),
+		bio VARCHAR(255) DEFAULT '',
 		role ENUM('student', 'instructor', 'admin') NOT NULL DEFAULT 'student',
 		created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 		updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
@@ -48,11 +48,23 @@ func InsertUser(user *User) (int64, error) {
 	return userID, nil
 }
 
-func FindUserByUserName(username string) (*User, error) {
-	query := "SELECT id, username, email, bio, password, created_at, updated_at FROM users WHERE username = ?"
+func FindUserByID(id int64) (*User, error) {
+	query := "SELECT id, username, email, bio, role, created_at, updated_at FROM users WHERE id = ?"
 
 	var user User
-	err := DB.QueryRow(query, username).Scan(&user.ID, &user.Username, &user.Email, &user.Bio, &user.Password, &user.CreatedAt, &user.UpdatedAt)
+	err := DB.QueryRow(query, id).Scan(&user.ID, &user.Username, &user.Email, &user.Bio, &user.Role, &user.CreatedAt, &user.UpdatedAt)
+	if err != nil {
+		return nil, err
+	}
+
+	return &user, nil
+}
+
+func FindUserByUserName(username string) (*User, error) {
+	query := "SELECT id, username, email, bio, role, password, created_at, updated_at FROM users WHERE username = ?"
+
+	var user User
+	err := DB.QueryRow(query, username).Scan(&user.ID, &user.Username, &user.Email, &user.Bio, &user.Role, &user.CreatedAt, &user.UpdatedAt)
 	if err != nil {
 		return nil, err
 	}
@@ -61,10 +73,10 @@ func FindUserByUserName(username string) (*User, error) {
 }
 
 func FindUserByEmail(email string) (*User, error) {
-	query := "SELECT id, username, email, bio, created_at, updated_at FROM users WHERE email = ?"
+	query := "SELECT id, username, email, bio, role, created_at, updated_at FROM users WHERE email = ?"
 
 	var user User
-	err := DB.QueryRow(query, email).Scan(&user.ID, &user.Username, &user.Email, &user.Bio, &user.CreatedAt, &user.UpdatedAt)
+	err := DB.QueryRow(query, email).Scan(&user.ID, &user.Username, &user.Email, &user.Bio, &user.Role, &user.CreatedAt, &user.UpdatedAt)
 	if err != nil {
 		return nil, err
 	}

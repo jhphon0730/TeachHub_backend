@@ -2,12 +2,13 @@ package model
 
 import (
 	"time"
+	"errors"
 )
 
 // 강의 테이블 ( instructor_id<users> )
 type Courses struct {
 	ID        		int64    	`json:"id"`
-	Instructor_id int64    	`json:"instructor_id"` // 1 : 1 
+	Instructor_id int64    	`json:"instructor_id"` // 1 : N
 	Title 				string 		`json:"title"`
 	Description 	string 		`json:"description"`
 	CreatedAt 		time.Time `json:"created_at"`
@@ -33,7 +34,7 @@ func CreateCoursesTable() error {
 		created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 		updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
 
-		FOREIGN KEY (instructor_id) REFERENCES users(id)
+		FOREIGN KEY (instructor_id) REFERENCES users(id) ON DELETE CASCADE
 	)
 	`
 	_, err := DB.Exec(createTableQuery)
@@ -42,6 +43,16 @@ func CreateCoursesTable() error {
 
 // 새로운 강의 추가 
 func InsertCourse(courses *Courses) (int64, error) {
+	// Check User is instructor
+	user, err := FindUserByID(courses.Instructor_id)
+	if err != nil {
+		return 0, errors.New("Cannot find user")
+	}
+
+	if user.Role != "instructor" {
+		return 0, errors.New("User is not instructor")
+	}
+
 	query := "INSERT INTO courses (instructor_id, title, description) VALUES (?, ?, ?)"
 
 	result, err := DB.Exec(query, courses.Instructor_id, courses.Title, courses.Description)

@@ -7,17 +7,17 @@ import (
 	"image_storage_server/internal/model"
 )
 
-type CoursesService interface {
-	CreateCourses(r *http.Request) (error)
+type CourseService interface {
+	CreateCourse(r *http.Request) (error)
 }
 
-type coursesService struct { }
+type courseService struct { }
 
-func NewCoursesService() CoursesService {
-	return &coursesService{}
+func NewCourseService() CourseService {
+	return &courseService{}
 }
 
-func (c *coursesService) CreateCourses(r *http.Request) error {
+func (c *courseService) CreateCourse(r *http.Request) error {
 	var courses model.Courses
 	var err error
 
@@ -26,7 +26,7 @@ func (c *coursesService) CreateCourses(r *http.Request) error {
 	}
 
 	// Valid Input 
-	if err = utils.CheckValidCreateCoursesInput(&courses); err != nil {
+	if err = utils.CheckValidCreateCourseInput(&courses); err != nil {
 		return err
 	}
 

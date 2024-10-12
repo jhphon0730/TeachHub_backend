@@ -5,24 +5,30 @@ import (
 	"net/http"
 	"time"
 
+	"image_storage_server/config"
 	"image_storage_server/internal/middleware"
 	"image_storage_server/internal/handlers"
 	"image_storage_server/internal/service"
-	"image_storage_server/config"
 )
 
 var (
 	UserService = service.NewUserService()
 	UserHandler = handlers.NewUserHandler(UserService)
+
+	CourseService = service.NewCourseService()
+	CourseHandler = handlers.NewCourseHandler(CourseService)
 )
 
 func Runserver() error {
 	router := http.NewServeMux()
 
+	// ############################ User ############################
 	router.HandleFunc("POST /register", UserHandler.RegisterUser)
 	router.HandleFunc("POST /login", UserHandler.LoginUser)
 	router.HandleFunc("PUT /update", UserHandler.UpdateUser)
 
+	// ############################ Course ############################
+	router.HandleFunc("POST /course", CourseHandler.CreateCourse)
 
 	// 미들웨어 스택 생성
 	middlewareStack := middleware.ChainMiddleware(

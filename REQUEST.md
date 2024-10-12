@@ -20,6 +20,8 @@ curl -X POST http://localhost:8080/login \
 * [Create](강의 생성)
 ```
 curl -X POST http://localhost:8080/course \
+    -H "Content-Type: application/json" \
+    -d '{"title": "인공지능 뿌시기", "description": "인공지능의 시작을 알린 퍼텝스톤", "instructor_id": 1}'
 ```
 
 * [FindAllCourses](모든 강의 조회)
