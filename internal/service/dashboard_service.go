@@ -44,10 +44,12 @@ func (c *dashboardService) InitialStudentDashboard(r *http.Request) (dto.Initial
 	if err != nil {
 		return initialDTO, errors.New("Failed to get all courses count")
 	}
+	myCourseCount, err := model.GetAllMyCoursesCountByStudentID(user.ID)
 
 	initialDTO.TotalStudentCount = stdCount
 	initialDTO.TotalInstructorCount = insCount
 	initialDTO.TotalCourseCount = courseCount
+	initialDTO.MyCourseCount = myCourseCount
 
 	return initialDTO, err
 }
@@ -76,15 +78,14 @@ func (c *dashboardService) InitialInstructorDashboard(r *http.Request) (dto.Init
 	if err != nil {
 		return initialDTO, errors.New("Failed to get all courses count")
 	}
-
-	initialDTO.TotalStudentCount = stdCount
-	initialDTO.TotalInstructorCount = insCount
-	initialDTO.TotalCourseCount = courseCount
-
 	myCourseCount, err := model.GetAllMyCoursesCountByInstructorID(user.ID)
 	if err != nil {
 		return initialDTO, errors.New("Failed to get all my courses count")
 	}
+
+	initialDTO.TotalStudentCount = stdCount
+	initialDTO.TotalInstructorCount = insCount
+	initialDTO.TotalCourseCount = courseCount
 	initialDTO.MyCourseCount = myCourseCount
 
 	return initialDTO, err
