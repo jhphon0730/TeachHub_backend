@@ -157,7 +157,7 @@ func CreateEnrollmentsTable() error {
 }
 
 // 강의에 새로운 사용자(수강 학생) 추가 
-func InsertEnrollmentsByCourseID(course_id int64, student_id int64) (int64, error) {
+func InsertStudentEnrollment(course_id int64, student_id int64) (int64, error) {
 	query := "INSERT INTO enrollments (courses_id, student_id) VALUES (?, ?)"
 
 	result, err := DB.Exec(query, course_id, student_id)
