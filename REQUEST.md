@@ -23,7 +23,7 @@ curl -X POST http://localhost:8080/course -H "Content-Type: application/json" -H
 
 * [GetCourseByInstructorID](강의ID로 강의 조회)
 ```
-curl -X GET http://localhost:8080/course?instructor_id=3 -H "Content-Type: application/json" -H "Authorization: Bearer "
+curl -X GET http://localhost:8080/course/instructor?instructor_id=3 -H "Content-Type: application/json" -H "Authorization: Bearer "
 ```
 
 * [FindAllCourses](모든 강의 조회)

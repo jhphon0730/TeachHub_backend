@@ -1,7 +1,6 @@
 package middleware
 
 import (
-	"log"
 	"context"
 	"strings"
 	"net/http"
@@ -40,7 +39,6 @@ func Auth(next http.Handler) http.Handler {
 
 		// ID 출력
 		user, err := model.FindUserByID(claims.ID)
-		log.Println(user)
 		if err != nil {
 			http.Error(w, "User not found", http.StatusUnauthorized)
 		}
