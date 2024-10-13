@@ -41,7 +41,7 @@ curl -X GET http://localhost:8080/course/instructor?instructor_id=3 -H "Content-
 ## Enrollments
 * [AddStudentEnrollment](강의ID, 학생ID로 수강신청)
 ```
-curl -X POST http://localhost:8080/course/student -H "Content-Type: application/json" -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwidXNlcm5hbWUiOiJ0ZXN0ZXIxMjMiLCJleHAiOjE3Mjg5MDYyNzd9.3vyjkOSJp9vKJcK7opuelNtO3goybztMvgvsuzity2U" -d '{"student_id": 2, "course_id": 3}'
+curl -X POST http://localhost:8080/course/student -H "Content-Type: application/json" -H "Authorization: Bearer " -d '{"student_id": 2, "course_id": 3}'
 ```
 
 * [GetCourseByStudentID](학생ID로 수강신청 조회)

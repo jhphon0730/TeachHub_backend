@@ -40,21 +40,21 @@ func Runserver() error {
 	router := http.NewServeMux()
 
 	// ############################ User ############################
-	router.Handle("POST /register", middlewareStack(http.HandlerFunc(UserHandler.RegisterUser)))
-	router.Handle("POST /login", middlewareStack(http.HandlerFunc(UserHandler.LoginUser)))
-	router.Handle("PATCH /update", middlewareStack(http.HandlerFunc(UserHandler.UpdateUser)))
+	router.Handle("POST /register", middlewareStack(http.HandlerFunc(UserHandler.RegisterUser))) // OK
+	router.Handle("POST /login", middlewareStack(http.HandlerFunc(UserHandler.LoginUser))) // OK
+	router.Handle("PATCH /update", middlewareStack(http.HandlerFunc(UserHandler.UpdateUser))) // OK
 
 	// ############################ Course ############################
 	router.Handle("POST /course", authMiddlewareStack(http.HandlerFunc(CourseHandler.CreateCourse)))
 	// ############## instructor ##############
-	router.Handle("GET /course/instructor", authMiddlewareStack(http.HandlerFunc(CourseHandler.GetCourseByInstructorID)))
+	router.Handle("GET /course/instructor", authMiddlewareStack(http.HandlerFunc(CourseHandler.GetCourseByInstructorID))) // OK
 	// ############## student ##############
-	router.Handle("GET /course/student", authMiddlewareStack(http.HandlerFunc(CourseHandler.GetCourseByStudentID)))
+	router.Handle("GET /course/student", authMiddlewareStack(http.HandlerFunc(CourseHandler.GetCourseByStudentID))) // OK
 	router.Handle("POST /course/student", authMiddlewareStack(http.HandlerFunc(CourseHandler.AddStudentEnrollment)))
 
 	// ############################ Dashboard ############################
-	router.Handle("GET /dashboard/student/initial", authMiddlewareStack(http.HandlerFunc(DashboardHandler.InitialStudentDashboard)))
-	router.Handle("GET /dashboard/instructor/initial", authMiddlewareStack(http.HandlerFunc(DashboardHandler.InitialInstructorDashboard)))
+	router.Handle("GET /dashboard/student/initial", authMiddlewareStack(http.HandlerFunc(DashboardHandler.InitialStudentDashboard))) // OK
+	router.Handle("GET /dashboard/instructor/initial", authMiddlewareStack(http.HandlerFunc(DashboardHandler.InitialInstructorDashboard))) // OK
 
 	// 서버 설정
 	server := &http.Server{
