@@ -31,7 +31,11 @@ var (
 	CourseService = service.NewCourseService()
 	CourseHandler = handlers.NewCourseHandler(CourseService)
 
-	// ############################ Course ############################
+	// ############################ ENrollment ############################
+	EnrollmentService = service.NewEnrollmentService()
+	EnrollmentHandler = handlers.NewEnrollmentHandler(EnrollmentService)
+
+	// ############################ Dashboard ############################
 	DashboardService = service.NewDashboardService()
 	DashboardHandler = handlers.NewDashboardHandler(DashboardService)
 )
@@ -46,11 +50,11 @@ func Runserver() error {
 
 	// ############################ Course ############################
 	router.Handle("POST /course", authMiddlewareStack(http.HandlerFunc(CourseHandler.CreateCourse)))
-	// ############## instructor ##############
-	router.Handle("GET /course/instructor", authMiddlewareStack(http.HandlerFunc(CourseHandler.GetCourseByInstructorID))) // OK
-	// ############## student ##############
-	router.Handle("GET /course/student", authMiddlewareStack(http.HandlerFunc(CourseHandler.GetCourseByStudentID))) // OK
-	router.Handle("POST /course/student", authMiddlewareStack(http.HandlerFunc(CourseHandler.AddStudentEnrollment)))
+
+	// ############################ Enrollment ############################
+	router.Handle("GET /enrollment/instructor", authMiddlewareStack(http.HandlerFunc(CourseHandler.GetCourseByInstructorID))) // OK
+	router.Handle("GET /enrollment/student", authMiddlewareStack(http.HandlerFunc(EnrollmentHandler.GetCourseByStudentID))) // OK
+	router.Handle("POST /enrollment/student", authMiddlewareStack(http.HandlerFunc(EnrollmentHandler.AddStudentEnrollment)))
 
 	// ############################ Dashboard ############################
 	router.Handle("GET /dashboard/student/initial", authMiddlewareStack(http.HandlerFunc(DashboardHandler.InitialStudentDashboard))) // OK

@@ -35,20 +35,3 @@ func (c *CourseHandler) GetCourseByInstructorID(w http.ResponseWriter, r *http.R
 	utils.WriteSuccessResponse(w, http.StatusOK, "Courses retrieved successfully", courses)
 }
 
-func (c *CourseHandler) AddStudentEnrollment(w http.ResponseWriter, r *http.Request) {
-	err := c.service.AddStudentEnrollment(r)
-	if err != nil {
-		utils.WriteErrorResponse(w, http.StatusBadRequest, err.Error())
-		return
-	}
-	utils.WriteSuccessResponse(w, http.StatusCreated, "Enrollment added successfully", nil)
-}
-
-func (c *CourseHandler) GetCourseByStudentID(w http.ResponseWriter, r *http.Request) {
-	courses, err := c.service.GetCourseByStudentID(r)
-	if err != nil {
-		utils.WriteErrorResponse(w, http.StatusBadRequest, err.Error())
-		return
-	}
-	utils.WriteSuccessResponse(w, http.StatusOK, "Courses retrieved successfully", courses)
-}
