@@ -39,11 +39,15 @@ func (c *enrollmentService) AddStudentEnrollment(r *http.Request) error {
 		return errors.New("User is not an instructor")
 	}
 
-	if addStudentDTO.Course_id == 0 || addStudentDTO.Student_id == 0 {
+	if addStudentDTO.Course_id == 0 || addStudentDTO.Student_Username == "" {
 		return errors.New("Course_id or Student_id is empty")
 	}
 
-	_, err = model.InsertStudentEnrollment(addStudentDTO.Course_id, addStudentDTO.Student_id)
+	student, err := model.FindUserByUserName(addStudentDTO.Student_Username)
+	if err != nil {
+		return errors.New("Cannot find student")
+	}
+	_, err = model.InsertStudentEnrollment(addStudentDTO.Course_id, student.ID)
 	if err != nil {
 		return errors.New("Cannot add student to course")
 	}
