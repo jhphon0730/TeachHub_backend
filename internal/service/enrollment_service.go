@@ -47,6 +47,13 @@ func (c *enrollmentService) AddStudentEnrollment(r *http.Request) error {
 	if err != nil {
 		return errors.New("Cannot find student")
 	}
+
+	// 이미 학생이 수강 중인지 확인
+	_, err = model.FindEnrollmentByStudentIDAndCourseID(student.ID, addStudentDTO.Course_id)
+	if err == nil {
+		return errors.New("Student already enrolled")
+	}
+
 	_, err = model.InsertStudentEnrollment(addStudentDTO.Course_id, student.ID)
 	if err != nil {
 		return errors.New("Cannot add student to course")

@@ -68,3 +68,16 @@ func FindEnrollmentsByStudentID(student_id int64) ([]Enrollments, error) {
 	return enrollments, nil
 }
 
+// 학생 ID와 강의 ID로 수강 정보 조회
+func FindEnrollmentByStudentIDAndCourseID(student_id int64, course_id int64) (*Enrollments, error) {
+	query := "SELECT id, courses_id, student_id, enrollment_date FROM enrollments WHERE student_id = ? AND courses_id = ?"
+
+	row := DB.QueryRow(query, student_id, course_id)
+
+	var enrollment Enrollments
+	if err := row.Scan(&enrollment.ID, &enrollment.Courses_id, &enrollment.Student_id, &enrollment.Enrollment_date); err != nil {
+		return nil, err
+	}
+
+	return &enrollment, nil
+}
