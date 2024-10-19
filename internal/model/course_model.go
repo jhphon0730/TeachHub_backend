@@ -3,6 +3,8 @@ package model
 import (
 	"time"
 	"errors"
+
+	"image_storage_server/internal/model/dto"
 )
 
 // 강의 테이블 ( instructor_id<users> )
@@ -83,8 +85,14 @@ func FindAllCourses() ([]Courses, error) {
 }
 
 // 강사가 생성한 강의들 모두 조회 
-func FindCourseByInstructorID(instructor_id int64) ([]Courses, error) {
-	query := "SELECT id, instructor_id, title, description, created_at, updated_at FROM courses WHERE instructor_id = ?"
+func FindCourseByInstructorID(instructor_id int64) ([]dto.FindCourseByInstructorIDDTO, error) {
+	query := `
+		SELECT c.*, IFNULL(COUNT(e.id), 0) AS students_count
+		FROM courses c
+		LEFT JOIN enrollments e ON c.id = e.courses_id
+		WHERE c.instructor_id = ?
+		GROUP BY c.id;
+	`
 
 	rows, err := DB.Query(query, instructor_id)
 	if err != nil {
@@ -92,10 +100,10 @@ func FindCourseByInstructorID(instructor_id int64) ([]Courses, error) {
 	}
 	defer rows.Close()
 
-	var courses []Courses
+	var courses []dto.FindCourseByInstructorIDDTO
 	for rows.Next() {
-		var course Courses
-		if err := rows.Scan(&course.ID, &course.Instructor_id, &course.Title, &course.Description, &course.CreatedAt, &course.UpdatedAt); err != nil {
+		var course dto.FindCourseByInstructorIDDTO
+		if err := rows.Scan(&course.ID, &course.Instructor_id, &course.Title, &course.Description, &course.CreatedAt, &course.UpdatedAt, &course.StrudentCount); err != nil {
 			return nil, err
 		}
 		courses = append(courses, course)
@@ -105,11 +113,17 @@ func FindCourseByInstructorID(instructor_id int64) ([]Courses, error) {
 }
 
 // 강의 ID로 강의 조회
-func FindCourseByCourseID(course_id int64) (*Courses, error) {
-	query := "SELECT id, instructor_id, title, description, created_at, updated_at FROM courses WHERE id = ?"
+func FindCourseByCourseID(course_id int64) (*dto.FindCourseByInstructorIDDTO, error) {
+	query := `
+		SELECT c.*, IFNULL(COUNT(e.id), 0) AS students_count
+		FROM courses c
+		LEFT JOIN enrollments e ON c.id = e.courses_id
+		WHERE c.id = ?
+		GROUP BY c.id;
+	`
 
-	var courses Courses
-	err := DB.QueryRow(query, course_id).Scan(&courses.ID, &courses.Instructor_id, &courses.Title, &courses.Description, &courses.CreatedAt, &courses.UpdatedAt)
+	var courses dto.FindCourseByInstructorIDDTO
+	err := DB.QueryRow(query, course_id).Scan(&courses.ID, &courses.Instructor_id, &courses.Title, &courses.Description, &courses.CreatedAt, &courses.UpdatedAt, &courses.StrudentCount)
 	if err != nil {
 		return nil, err
 	}
@@ -118,8 +132,8 @@ func FindCourseByCourseID(course_id int64) (*Courses, error) {
 }
 
 // 수강 내역 테이블에서 조회한 데이터 ( course_id ) 로 강의 조회 
-func FindCourseByEnrollments(enrollments []Enrollments) ([]Courses, error) {
-	var courses []Courses
+func FindCourseByEnrollments(enrollments []Enrollments) ([]dto.FindCourseByInstructorIDDTO, error) {
+	var courses []dto.FindCourseByInstructorIDDTO
 	for _, enrollment := range enrollments {
 		course, err := FindCourseByCourseID(enrollment.Courses_id)
 		if err != nil {

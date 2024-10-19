@@ -6,12 +6,13 @@ import (
 
 	"image_storage_server/pkg/utils"
 	"image_storage_server/internal/model"
+	"image_storage_server/internal/model/dto"
 	"image_storage_server/internal/middleware"
 )
 
 type CourseService interface {
 	CreateCourse(r *http.Request) (error)
-	GetCourseByInstructorID(r *http.Request) ([]model.Courses, error)
+	GetCourseByInstructorID(r *http.Request) ([]dto.FindCourseByInstructorIDDTO, error)
 }
 
 type courseService struct { }
@@ -49,7 +50,7 @@ func (c *courseService) CreateCourse(r *http.Request) error {
 
 // ####################### Courses ####################### //
 /* 강사의 ID로 강의 조회 */
-func (c *courseService) GetCourseByInstructorID(r *http.Request) ([]model.Courses, error) {
+func (c *courseService) GetCourseByInstructorID(r *http.Request) ([]dto.FindCourseByInstructorIDDTO, error) {
 	_, ok := r.Context().Value(middleware.UserContextKey).(*model.User)
 	if !ok {
 		return nil, errors.New("User not found")

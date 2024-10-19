@@ -12,7 +12,7 @@ import (
 
 type EnrollmentService interface {
 	AddStudentEnrollment(r *http.Request) (error)
-	GetCourseByStudentID(r *http.Request) ([]model.Courses, error)
+	GetCourseByStudentID(r *http.Request) ([]dto.FindCourseByInstructorIDDTO, error)
 }
 
 type enrollmentService struct { }
@@ -66,7 +66,7 @@ func (c *enrollmentService) AddStudentEnrollment(r *http.Request) error {
 }
 
 /* 학생 ID로 학생이 속한 강좌/강의 조회 */
-func (c *enrollmentService) GetCourseByStudentID(r *http.Request) ([]model.Courses, error) {
+func (c *enrollmentService) GetCourseByStudentID(r *http.Request) ([]dto.FindCourseByInstructorIDDTO, error) {
 	user, ok := r.Context().Value(middleware.UserContextKey).(*model.User)
 	if !ok || user == nil {
 		return nil, errors.New("User not found")
@@ -81,7 +81,7 @@ func (c *enrollmentService) GetCourseByStudentID(r *http.Request) ([]model.Cours
 		return nil, errors.New("Cannot find enrollments")
 	}
 
-	var courses []model.Courses
+	var courses []dto.FindCourseByInstructorIDDTO
 	for _, enrollment := range enrollments {
 		course, err := model.FindCourseByCourseID(enrollment.Courses_id)
 		if err != nil {
