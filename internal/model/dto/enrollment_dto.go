@@ -5,3 +5,4 @@ type AddStudentDTO struct {
 	Course_id int64 	`json:"course_id"`
 	Student_Username string 	`json:"student_username"`
 }
+

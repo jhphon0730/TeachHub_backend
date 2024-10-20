@@ -13,6 +13,7 @@ import (
 type CourseService interface {
 	CreateCourse(r *http.Request) (error)
 	GetCourseByInstructorID(r *http.Request) ([]dto.FindCourseByInstructorIDDTO, error)
+	RemoveStudentToCourse(r *http.Request) (error)
 }
 
 type courseService struct { }
@@ -79,5 +80,44 @@ func (c *courseService) GetCourseByInstructorID(r *http.Request) ([]dto.FindCour
 	}
 
 	return courses, nil
+}
+
+/* 강사가 학생의 ID로 수강 내역 삭제 */
+func (c *courseService) RemoveStudentToCourse(r *http.Request) error {
+	user, ok := r.Context().Value(middleware.UserContextKey).(*model.User)
+	if !ok || user == nil {
+		return errors.New("User not found")
+	}
+
+	// Check roll
+	if user.Role != "instructor" {
+		return errors.New("User is not an instructor")
+	}
+
+	var removeStudentDTO dto.RemoveStudentDTO
+	var err error
+	if err = utils.ParseJSON(r, &removeStudentDTO); err != nil {
+		return err
+	}
+
+	if removeStudentDTO.Student_Username == "" {
+		return errors.New("Student_Username is empty")
+	}
+
+	student, err := model.FindUserByUserName(removeStudentDTO.Student_Username)
+	if err != nil {
+		return errors.New("Cannot find student")
+	}
+
+	if student.Role != "student" {
+		return errors.New("User is not a student")
+	}
+
+	err = model.DeleteEnrollmentByStudentIDAndCourseID(student.ID, removeStudentDTO.Course_id)
+	if err != nil {
+		return errors.New("Cannot remove student to course")
+	}
+
+	return nil
 }
 

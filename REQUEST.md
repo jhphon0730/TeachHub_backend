@@ -24,6 +24,11 @@ curl -X POST http://localhost:8080/course -H "Content-Type: application/json" -H
 curl -X GET http://localhost:8080/course/instructor?instructor_id=3 -H "Content-Type: application/json" -H "Authorization: Bearer "
 ```
 
+* [RemoveStudentToCourse](강의ID, 학생ID로 수강취소) OK
+```
+curl -X DELETE http://localhost:8080/course/student -H "Content-Type: application/json" -H "Authorization: Bearer "
+```
+
 # ############################## Enrollments ##############################
 * [AddStudentEnrollment](강의ID, 학생 Usernamed으로 수강신청)
 ```

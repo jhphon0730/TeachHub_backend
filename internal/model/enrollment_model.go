@@ -81,3 +81,15 @@ func FindEnrollmentByStudentIDAndCourseID(student_id int64, course_id int64) (*E
 
 	return &enrollment, nil
 }
+
+// 학생 ID와 강의 ID로 수강 정보 삭제
+func DeleteEnrollmentByStudentIDAndCourseID(student_id int64, course_id int64) error {
+	query := "DELETE FROM enrollments WHERE student_id = ? AND courses_id = ?"
+
+	_, err := DB.Exec(query, student_id, course_id)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
