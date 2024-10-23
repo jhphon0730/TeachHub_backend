@@ -113,6 +113,12 @@ func (c *courseService) RemoveStudentToCourse(r *http.Request) error {
 		return errors.New("User is not a student")
 	}
 
+	// 학생이 강의에 등록되어 있는지 확인
+	_, err = model.FindEnrollmentByStudentIDAndCourseID(student.ID, removeStudentDTO.Course_id)
+	if err != nil {
+		return errors.New("Student is not enrolled in the course")
+	}
+
 	err = model.DeleteEnrollmentByStudentIDAndCourseID(student.ID, removeStudentDTO.Course_id)
 	if err != nil {
 		return errors.New("Cannot remove student to course")
