@@ -156,3 +156,29 @@ func DeleteEnrollmentByStudentIDAndCourseID(student_id int64, course_id int64) e
 
 	return nil
 }
+
+/* 강의 ID로 수강 중인 학생 ID와 학생 이름들을 출력 */
+func FindStudentsByCourseID(course_id int64) ([]dto.FindStudentsByCourseIDDTO, error) {
+	var students []dto.FindStudentsByCourseIDDTO
+
+	query := `
+		SELECT u.id, u.username
+		FROM enrollments enrollments 
+		JOIN users u ON enrollments.student_id = u.id 
+		WHERE enrollments.courses_id = ?
+	`
+	rows, err := DB.Query(query, course_id)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	for rows.Next() {
+		var student dto.FindStudentsByCourseIDDTO
+		if err := rows.Scan(&student.User_id, &student.User_Username); err != nil {
+			return nil, err
+		}
+		students = append(students, student)
+	}
+	return students, nil
+}

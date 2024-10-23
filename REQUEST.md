@@ -29,6 +29,11 @@ curl -X GET http://localhost:8080/course/instructor?instructor_id=3 -H "Content-
 curl -X DELETE http://localhost:8080/course/student -H "Content-Type: application/json" -H "Authorization: Bearer "
 ```
 
+* [GetStudentsByCourseID](강의ID로 학생들을 조회) OK
+```
+curl -X GET http://localhost:8080/course/student?course_id=3 -H "Content-Type: application/json
+```
+
 # ############################## Enrollments ##############################
 * [AddStudentEnrollment](강의ID, 학생 Usernamed으로 수강신청)
 ```

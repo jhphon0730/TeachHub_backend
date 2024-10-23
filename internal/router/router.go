@@ -50,6 +50,7 @@ func Runserver() error {
 
 	// ############################ Course ############################
 	router.Handle("POST /course", authMiddlewareStack(http.HandlerFunc(CourseHandler.CreateCourse)))
+	router.Handle("GET /course/student", authMiddlewareStack(http.HandlerFunc(CourseHandler.GetStudentsByCourseID)))
 	router.Handle("DELETE /course/student", authMiddlewareStack(http.HandlerFunc(CourseHandler.RemoveStudentToCourse)))
 
 	// ############################ Enrollment ############################

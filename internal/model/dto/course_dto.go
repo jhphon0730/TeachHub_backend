@@ -27,3 +27,8 @@ type RemoveStudentDTO struct {
 	Course_id int64 	`json:"course_id"`
 	Student_Username string 	`json:"student_username"`
 }
+
+type FindStudentsByCourseIDDTO struct {
+	User_id int64 	`json:"user_id"`
+	User_Username string 	`json:"user_username"`
+}

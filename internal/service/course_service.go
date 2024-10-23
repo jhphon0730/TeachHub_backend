@@ -14,6 +14,7 @@ type CourseService interface {
 	CreateCourse(r *http.Request) (error)
 	GetCourseByInstructorID(r *http.Request) ([]dto.FindCourseByInstructorIDDTO, error)
 	RemoveStudentToCourse(r *http.Request) (error)
+	GetStudentsByCourseID(r *http.Request) ([]dto.FindStudentsByCourseIDDTO, error)
 }
 
 type courseService struct { }
@@ -127,3 +128,39 @@ func (c *courseService) RemoveStudentToCourse(r *http.Request) error {
 	return nil
 }
 
+/* 강의 ID로 수강 중인 학생 ID와 학생 이름들을 출력 */
+func (c *courseService) GetStudentsByCourseID(r *http.Request) ([]dto.FindStudentsByCourseIDDTO, error) {
+	user, ok := r.Context().Value(middleware.UserContextKey).(*model.User)
+	if !ok || user == nil {
+		return nil, errors.New("User not found")
+	}
+
+	// Check roll
+	if user.Role != "instructor" {
+		return nil, errors.New("User is not an instructor")
+	}
+
+	course_id := r.URL.Query().Get("course_id")
+	if len(course_id) == 0 {
+		return nil, errors.New("course_id is empty")
+	}
+
+	// id type is int64
+	courseID, err := utils.ParseInt64(course_id)
+	if err != nil {
+		return nil, err
+	}
+
+	// Check if the course exists
+	_, err = model.FindStudentsByCourseID(courseID)
+	if err != nil {
+		return nil, errors.New("Course not found")
+	}
+
+	students, err := model.FindStudentsByCourseID(courseID)
+	if err != nil {
+		return nil, err
+	}
+
+	return students, nil
+}

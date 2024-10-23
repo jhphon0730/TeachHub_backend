@@ -43,3 +43,12 @@ func (c *CourseHandler) RemoveStudentToCourse(w http.ResponseWriter, r *http.Req
 	}
 	utils.WriteSuccessResponse(w, http.StatusOK, "Student removed successfully", nil)
 }
+
+func (c *CourseHandler) GetStudentsByCourseID(w http.ResponseWriter, r *http.Request) {
+	students, err := c.service.GetStudentsByCourseID(r)
+	if err != nil {
+		utils.WriteErrorResponse(w, http.StatusBadRequest, err.Error())
+		return
+	}
+	utils.WriteSuccessResponse(w, http.StatusOK, "Students retrieved successfully", students)
+}
